@@ -15,7 +15,6 @@ namespace WEBAPI.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server=.;Database=fakeksi;Trusted_Connection=true;TrustServerCertificate=true;");
         }
 
         public DbSet<Users> Users { get; set; }

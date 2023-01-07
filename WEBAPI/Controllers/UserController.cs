@@ -33,8 +33,8 @@ namespace WEBAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<List<Users>>> AddHero(Users hero)
         {
-           // var result = await _superHeroService.AddHero(hero);
-            return Ok("");
+            var result = await _usrservice.AddHero(hero);
+            return Ok(result);
         }
 
         [HttpPut("{id}")]

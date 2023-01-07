@@ -1,4 +1,5 @@
-﻿using WEBAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WEBAPI.Data;
 using WEBAPI.Models;
 
 namespace WEBAPI.Services
@@ -12,9 +13,11 @@ namespace WEBAPI.Services
             _context = context;
         }
 
-        public Task<List<Users>> AddUser(Users hero)
+        public async Task<List<Users>> AddUser(Users hero)
         {
-            throw new NotImplementedException();
+           _context.Users.Add(hero);
+             await _context.SaveChangesAsync();
+            return await _context.Users.ToListAsync();
         }
 
         public Task<List<Users>?> DeleteUser(int id)
