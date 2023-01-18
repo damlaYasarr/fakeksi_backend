@@ -36,7 +36,12 @@ namespace WEBAPI.Controllers
             var result = await _usrservice.AddUser(hero);
             return Ok(result);
         }
-
+        [HttpPost("userregister")]
+        public async Task<ActionResult<List<Users>>> Register(Users hero)
+        {
+            var result = await _usrservice.AddUser(hero);
+            return Ok(result);
+        }
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Users>>> UpdateHero(int id, Users request)
         {
