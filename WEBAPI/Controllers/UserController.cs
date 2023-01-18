@@ -30,14 +30,14 @@ namespace WEBAPI.Controllers
             return Ok("");
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<ActionResult<List<Users>>> AddHero(Users hero)
         {
             var result = await _usrservice.AddUser(hero);
             return Ok(result);
         }
-        [HttpPost("userregister")]
-        public async Task<ActionResult<List<Users>>> Register(Users hero)
+        [HttpPost("login")]
+        public async Task<ActionResult<List<Users>>> Login(Users hero)
         {
             var result = await _usrservice.AddUser(hero);
             return Ok(result);
