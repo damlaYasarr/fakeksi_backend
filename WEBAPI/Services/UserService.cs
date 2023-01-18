@@ -1,17 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using WEBAPI.Data;
 using WEBAPI.Models;
+using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace WEBAPI.Services
 {
     public class UserService : IUserService
     {
+      
         private readonly DataContext _context;
 
         public UserService(DataContext context)
         {
             _context = context;
         }
+        //profile image ekleme kısmı araştıralım
+      
 
         public async Task<List<Users>> AddUser(Users hero)
         {    

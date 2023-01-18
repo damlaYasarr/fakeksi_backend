@@ -10,7 +10,7 @@ namespace WEBAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _usrservice;
-
+       
         public UserController(IUserService usrservice)
         {
             _usrservice = usrservice;
@@ -48,6 +48,8 @@ namespace WEBAPI.Controllers
             var result = await _usrservice.Logout(id);
             return Ok(result);
         }
+
+   
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Users>>> UpdateHero(int id, Users request)
         {
