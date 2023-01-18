@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using WEBAPI.Data;
 using WEBAPI.Models;
 
@@ -15,10 +16,7 @@ namespace WEBAPI.Controllers
         {
             _webHostEnvironment = webHostEnvironment;   
         }
-        public FileoploadController(DataContext context)
-        {
-            _context = context;
-        }
+     
         [HttpPost("imageupload")]
         public string Post([FromForm]FileUpload u)
         {
@@ -53,10 +51,47 @@ namespace WEBAPI.Controllers
             }
 
         }
-        [HttpGet("getphoto")]
-        public string Getpath()
+        [HttpPost("uploadimagesecond")]
+        public async Task<ActionResult> Uploadimg([FromForm] FileUpload u)
         {
+            bool Result = false;
+            try
+            {
+                var _uploadedfiles = Request.Form.Files; 
+                foreach(IFormFile source in _uploadedfiles)
+                {
+                    string Filename = source.FileName;
+                    string FilePath = Getpath(Filename);
+                    if (!Directory.Exists(FilePath))
+                    {
+                        Directory.CreateDirectory(FilePath);
+                    }
+                    string imagepath = FilePath + u.image.FileName;
+                    if (System.IO.File.Exists(FilePath))
+                    {
+                        System.IO.File.Delete(imagepath);
+                    }
+
+                    using (FileStream filestream = System.IO.File.Create(imagepath + u.image.FileName))
+                    {
+                        await source.CopyToAsync(filestream);
+                        Result = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(Result);
 
         }
+        [NonAction]
+        public string Getpath(string filename)
+        {
+            return _webHostEnvironment.WebRootPath + "\\uploads\\"+filename;
+        }
+     
     }
 }
