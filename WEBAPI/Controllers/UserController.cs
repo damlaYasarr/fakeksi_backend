@@ -37,9 +37,15 @@ namespace WEBAPI.Controllers
             return Ok(result);
         }
         [HttpPost("Login")]
-        public async Task<ActionResult<List<Users>>> Login(Users hero)
+        public async Task<ActionResult<List<Users>>> Login(int id,string email, string password)
         {
-            var result = await _usrservice.AddUser(hero);
+            var result = await _usrservice.Login(id, email,password);
+            return Ok(result);
+        }
+        [HttpGet("Logout")]
+        public async Task<ActionResult<List<Users>>> Logout(Users hero)
+        {
+            var result = await _usrservice.Logout(hero);
             return Ok(result);
         }
         [HttpPut("{id}")]
