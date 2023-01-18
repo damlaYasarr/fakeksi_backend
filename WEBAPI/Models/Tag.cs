@@ -7,6 +7,6 @@ namespace WEBAPI.Models
         public int id { get; set; }
         public int user_id { get; set; }
         public string definition { get; set; }
-        public DateTime tags_date { get; set; }
+        //public DateTime tags_date { get; set; }
     }
 }
