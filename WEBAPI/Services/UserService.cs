@@ -35,6 +35,35 @@ namespace WEBAPI.Services
             throw new NotImplementedException();
         }
 
+        public async Task<Users?> Login(int id, string email, string password)
+        {
+            var result = _context.Users.SingleOrDefault(e => e.user_id == id); 
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                if(result.email == email & result.password==password) {
+                   
+                        result.isActive = true;
+                        await _context.SaveChangesAsync();
+                    
+                }
+            }
+                
+            return result;
+        }
+
+        public async Task<Users?> Logout(Users user)
+        {     
+            user.isActive = false;
+            await _context.SaveChangesAsync();
+            return user;
+         
+        }
+
+
         public Task<List<Users>?> UpdateUsrs(int id, Users request)
         {
             throw new NotImplementedException();
