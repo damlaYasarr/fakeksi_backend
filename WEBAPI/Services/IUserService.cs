@@ -8,7 +8,7 @@ namespace WEBAPI.Services
         Task<Users?> GetSingleUsrs(int id);
         Task<List<Users>> AddUser(Users hero);
         Task<Users?> Login(int id, string email, string password);
-        Task<Users?> Logout(Users user);
+        Task<Users?> Logout(int id);
         Task<List<Users>?> UpdateUsrs(int id, Users request);
         Task<List<Users>?> DeleteUser(int id);
     }

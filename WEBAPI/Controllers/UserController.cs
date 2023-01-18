@@ -43,9 +43,9 @@ namespace WEBAPI.Controllers
             return Ok(result);
         }
         [HttpGet("Logout")]
-        public async Task<ActionResult<List<Users>>> Logout(Users hero)
+        public async Task<ActionResult<List<Users>>> Logout(int id)
         {
-            var result = await _usrservice.Logout(hero);
+            var result = await _usrservice.Logout(id);
             return Ok(result);
         }
         [HttpPut("{id}")]
