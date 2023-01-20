@@ -12,6 +12,7 @@ namespace WEBAPI.Services
             _context = context;
         }
         //başlık kısmı mutlaka entry ile paylaşılmalı
+        //mesela 
         public async Task<Tag?> ShareTag(Tag tag)
         {
            
