@@ -22,12 +22,14 @@ namespace WEBAPI.Controllers
             return await _usrservice.GetAllUsers();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("getuserbyid")]
         public async Task<ActionResult<Users>> GetSingleHero(int id)
         {
-            
+            var result = await _usrservice.GetSingleUsrs(id);
+            if (result is null)
+                return NotFound("Hero not found.");
 
-            return Ok("");
+            return Ok(result);
         }
 
         [HttpPost("Register")]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WEBAPI.Models;
+using WEBAPI.Models.DTO_s;
 using WEBAPI.Services;
 
 namespace WEBAPI.Controllers
@@ -15,10 +16,10 @@ namespace WEBAPI.Controllers
         {
             _tagentryservice = tagentryservice;
         }
-        [HttpPost("tag ekle")]
-        public async Task<ActionResult<Tag>> Addtag(Tag tag)
+        [HttpPost("tagekle")]
+        public async Task<ActionResult<ShareTagwithEntry>> Addtag(ShareTagwithEntry entyshare)
         {
-            await _tagentryservice.ShareTag(tag);
+            await _tagentryservice.ShareTag(entyshare);
             return Ok("tag eklendi"); 
         }
 

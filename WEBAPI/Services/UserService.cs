@@ -37,9 +37,14 @@ namespace WEBAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<Users?> GetSingleUsrs(int id)
+        public async Task<Users?> GetSingleUsrs(int id)
         {
-            throw new NotImplementedException();
+            var person=await _context.Users.FindAsync(id);
+            if (person == null)
+            {
+                return null;
+            }
+            return person;
         }
 
         public async Task<Users?> Login(int id, string email, string password)

@@ -1,4 +1,5 @@
-﻿using WEBAPI.Data;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
 
@@ -12,47 +13,32 @@ namespace WEBAPI.Services
         {
             _context = context;
         }
-        //başlık kısmı mutlaka entry ile paylaşılmalı
        
-        public async Task<Tag?> ShareTag(Tag tag)
-        {//deneme kod cvvvc
-            //kjbkkh
-            /*
-              var result = from r in context.basvuru
-                                 join x in context.users on user_id equals x.Id
-                                 join u in context.status_table on r.status equals u.id into ux
-                                 from u in ux.DefaultIfEmpty()
-                                 where r.Id == user_id
-                                 select new ApplicationSchemaDto
-                                 {
-                                     id = r.Id,
-                                     user_id = r.User_Id,
-                                     Created = r.Zaman_Damgası,
-                                     status = u.id,
-                                     baslik = r.Baslik
-                                 };
-             */
-            var result = from r in _context.Tags
-                         join p in _context.Users on user_id equals r.
-                         join u in _context.Tags on r.tag_id equals u.id into ux
-                         from u in ux.DefaultIfEmpty()
-                         where r.Id == user_id
-                         select new ShareTagwithEntry
-                         {
-                             
-                         };
+       
+        public async Task<ShareTagwithEntry?> ShareTag(ShareTagwithEntry entyshare)
+        {
+            var person=_context.Users.SingleOrDefault(b=>b.user_id == entyshare.user_id);
+            
+                var result = from r in _context.Tags
+                             join p in _context.Users on entyshare.user_id equals p.user_id //user id gerekli
+                             join u in _context.Entry on r.id equals u.tag_id into ux
+                             from u in ux.DefaultIfEmpty()
+                             where p.user_id == entyshare.user_id
+                             select new ShareTagwithEntry
+                             {
+                                 tag_id = r.id,
+                                 user_id = p.user_id,
+                                 entry_id = u.id,
+                                 tag = r.definition,
+                                 entry = u.definition
+                             };
 
 
-            Tag tg = new Tag()
-            {
-                definition=tag.definition,
-                id=tag.id,
-                user_id=tag.user_id,
+                await _context.SaveChangesAsync();
+                return entyshare;
+            
 
-            };
-            _context.Tags.Add(tag);
-            await _context.SaveChangesAsync();
-            return tag;
+
 
 
         }
