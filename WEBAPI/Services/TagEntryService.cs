@@ -15,7 +15,7 @@ namespace WEBAPI.Services
         //başlık kısmı mutlaka entry ile paylaşılmalı
        
         public async Task<Tag?> ShareTag(Tag tag)
-        {
+        {//deneme kod 
             /*
               var result = from r in context.basvuru
                                  join x in context.users on user_id equals x.Id
