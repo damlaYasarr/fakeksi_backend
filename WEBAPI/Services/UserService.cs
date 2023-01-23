@@ -49,7 +49,7 @@ namespace WEBAPI.Services
             {
                 var result=from follower in _context.Follower 
 
-
+   //bişey delete olacak
                 _context.Follower.Add(followers);
                 await _context.SaveChangesAsync();
             }
