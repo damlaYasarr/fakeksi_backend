@@ -39,6 +39,15 @@ namespace WEBAPI.Controllers
 
             return Ok("işlem başarılı");
         }
+        [HttpDelete]
+        [Route("api/users/{userId}/followers/{followerId}")]
+        public async Task<ActionResult<Users>> DeleteFollower(int id, int otherid)
+        {
+            await _usrservice.DeleteFollower(id, otherid);
+
+
+            return Ok("işlem başarılı");
+        }
         [HttpPost("Register")]
         public async Task<ActionResult<List<Users>>> AddHero(Users hero)
         {
