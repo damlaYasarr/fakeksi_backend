@@ -17,10 +17,29 @@ namespace WEBAPI.Services
             _context = context;
         }
 
-        public Task<Users?> addfollower(int usrid)
+        public async Task<Users> AddFollower(int benim, int otheruser)
         {
-            
+            var getuser = await GetSingleUsrsById(otheruser);
+            //Console.WriteLine(getuser.user_id);
+            var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
+            if (result == null)
+            {
+                Followers followers = new Followers()
+                {
+                    //benim takip ettiğime ekledim. bense onun follower'i olmalıım.
+                    followed_id = otheruser, //id takip ettiğim kişi
+                    follower_id = benim,
+                };
+
+                _context.Followers.Add(followers);
+                await _context.SaveChangesAsync();
+            }
+            return getuser;
+
+
+
         }
+        //dfldasfjsklfjl
 
         //profile image ekleme kısmı araştıralım
 
