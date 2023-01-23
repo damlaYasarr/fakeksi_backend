@@ -14,6 +14,6 @@ namespace WEBAPI.Services
         Task<List<Users>?> UpdateUsrs(int id, Users request);
         Task<List<Users>?> DeleteUser(int id);
         //Task<int?> getfollowersid(int benim, int otheruser);
-      
+        Task<List<Users>?> GetAllFollower(int id);
     }
 }

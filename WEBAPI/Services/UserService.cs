@@ -18,8 +18,8 @@ namespace WEBAPI.Services
         {
             _context = context;
         }
+        public async Task<Users?> Addfollower(int benim, int otheruser)
 
-        public async Task<Users?> AddFollower(int benim, int otheruser)
         {
             var getuser = await GetSingleUsrsById(otheruser);
             //Console.WriteLine(getuser.user_id);
@@ -48,12 +48,13 @@ namespace WEBAPI.Services
             //Console.WriteLine(getuser.user_id);
             var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
             if (result != null)
-            {  
+            {
                 var xx = from r in _context.Followers
-                             where r.followed_id == benim && r.follower_id == otheruser
-                             select r.id;
-                _context.Followers.Remove((Followers)xx);
-                await _context.SaveChangesAsync();
+                         where r.followed_id == benim && r.follower_id == otheruser
+                         select r.id;
+                Console.WriteLine("cıktı bu"+xx);           
+               // _context.Followers.Remove((Followers)xx);
+                //await _context.SaveChangesAsync();
             }
             return getuser;
 
@@ -125,14 +126,13 @@ namespace WEBAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<Users?> Addfollower(int benim, int otheruser)
+       
+
+        public Task<List<Users>?> GetAllFollower(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Followers?> getfollowersid(int benim, int otheruser)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }
