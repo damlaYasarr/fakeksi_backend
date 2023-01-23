@@ -21,7 +21,7 @@ namespace WEBAPI.Services
         {
             var getuser = await GetSingleUsrsById(otheruser);
             //Console.WriteLine(getuser.user_id);
-            var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
+            var result = _context.Follower.SingleOrDefault(e => e.followed_id == getuser.user_id);
             if (result == null)
             {
                 Followers followers = new Followers()
@@ -31,7 +31,7 @@ namespace WEBAPI.Services
                     follower_id = benim,
                 };
 
-                _context.Followers.Add(followers);
+                _context.Follower.Add(followers);
                 await _context.SaveChangesAsync();
             }
             return getuser;
@@ -62,7 +62,7 @@ namespace WEBAPI.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Users?> GetSingleUsrs(int id)
+        public async Task<Users?> GetSingleUsrsById(int id)
         {
             var person=await _context.Users.FindAsync(id);
             if (person == null)

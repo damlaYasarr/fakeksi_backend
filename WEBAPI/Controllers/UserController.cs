@@ -25,13 +25,20 @@ namespace WEBAPI.Controllers
         [HttpGet("getuserbyid")]
         public async Task<ActionResult<Users>> GetSingleHero(int id)
         {
-            var result = await _usrservice.GetSingleUsrs(id);
+            var result = await _usrservice.GetSingleUsrsById(id);
             if (result is null)
                 return NotFound("Hero not found.");
 
             return Ok(result);
         }
+        [HttpPost("addFollower")]
+        public async Task<ActionResult<Users>> AddFollower(int id, int otherid)
+        {
+            await _usrservice.Addfollower(id,otherid);
+           
 
+            return Ok("işlem başarılı");
+        }
         [HttpPost("Register")]
         public async Task<ActionResult<List<Users>>> AddHero(Users hero)
         {
