@@ -16,8 +16,14 @@ namespace WEBAPI.Services
         {
             _context = context;
         }
+
+        public Task<Users?> addfollower(int usrid)
+        {
+            
+        }
+
         //profile image ekleme kısmı araştıralım
-      
+
 
         public async Task<List<Users>> AddUser(Users hero)
         {    

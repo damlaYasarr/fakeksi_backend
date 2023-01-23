@@ -19,17 +19,17 @@ namespace WEBAPI.Services
         {
             var person=_context.Users.SingleOrDefault(b=>b.user_id == entyshare.user_id);
             
-                var result = from r in _context.Tags
-                             join p in _context.Users on entyshare.user_id equals p.user_id //user id gerekli
-                             join u in _context.Entry on r.id equals u.tag_id into ux
+                var result = from r in _context.Users
+                             join p in _context.Tags on entyshare.tag_id equals p.id //user id gerekli
+                             join u in _context.Entry on r.user_id equals u.user_id into ux
                              from u in ux.DefaultIfEmpty()
                              where p.user_id == entyshare.user_id
                              select new ShareTagwithEntry
                              {
-                                 tag_id = r.id,
-                                 user_id = p.user_id,
+                                 tag_id = p.id,
+                                 user_id = r.user_id,
                                  entry_id = u.id,
-                                 tag = r.definition,
+                                 tag = p.definition,
                                  entry = u.definition
                              };
 
