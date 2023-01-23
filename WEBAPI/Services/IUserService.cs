@@ -10,6 +10,7 @@ namespace WEBAPI.Services
         Task<Users?> Login(int id, string email, string password);
         Task<Users?> Logout(int id);
         Task<Users?> Addfollower(int id);
+        Task<Users?> DeleteFollower(int id);
         Task<List<Users>?> UpdateUsrs(int id, Users request);
         Task<List<Users>?> DeleteUser(int id);
     }
