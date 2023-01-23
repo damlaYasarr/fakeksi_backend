@@ -17,7 +17,7 @@ namespace WEBAPI.Services
             _context = context;
         }
 
-        public async Task<Users> AddFollower(int benim, int otheruser)
+        public async Task<Users?> AddFollower(int benim, int otheruser)
         {
             var getuser = await GetSingleUsrsById(otheruser);
             //Console.WriteLine(getuser.user_id);
@@ -39,10 +39,25 @@ namespace WEBAPI.Services
 
 
         }
-        //dfldasfjsklfjl
 
-        //profile image ekleme kısmı araştıralım
+        public async Task<Users?> DeleteFollower(int benim, int otheruser)
+        {
+            var getuser = await GetSingleUsrsById(otheruser);
+            //Console.WriteLine(getuser.user_id);
+            var result = _context.Follower.SingleOrDefault(e => e.followed_id == getuser.user_id);
+            if (result != null)
+            {
+                var result=from follower in _context.Follower 
 
+
+                _context.Follower.Add(followers);
+                await _context.SaveChangesAsync();
+            }
+            return getuser;
+
+
+
+        }
 
         public async Task<List<Users>> AddUser(Users hero)
         {    
@@ -103,6 +118,11 @@ namespace WEBAPI.Services
 
 
         public Task<List<Users>?> UpdateUsrs(int id, Users request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Users?> Addfollower(int benim, int otheruser)
         {
             throw new NotImplementedException();
         }
