@@ -22,7 +22,7 @@ namespace WEBAPI.Data
         public DbSet<FileUpload> Files { get; set; }
         public DbSet<Tag> Tags{ get; set; }
         public DbSet<Entry> Entry { get; set; }
-        public DbSet<Followers> Follower { get; set; }
+        public DbSet<Followers> Followers { get; set; }
 
     }
 }

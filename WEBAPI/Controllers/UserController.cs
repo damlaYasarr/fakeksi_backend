@@ -22,6 +22,7 @@ namespace WEBAPI.Controllers
             return await _usrservice.GetAllUsers();
         }
 
+      
         [HttpGet("getuserbyid")]
         public async Task<ActionResult<Users>> GetSingleHero(int id)
         {
@@ -39,8 +40,9 @@ namespace WEBAPI.Controllers
 
             return Ok("işlem başarılı");
         }
-        [HttpDelete]
-        [Route("api/users/{userId}/followers/{followerId}")]
+
+        //[Route("api/users/{userId}/followers/{followerId}")]
+        [HttpDelete("deletefollower")]
         public async Task<ActionResult<Users>> DeleteFollower(int id, int otherid)
         {
             await _usrservice.DeleteFollower(id, otherid);

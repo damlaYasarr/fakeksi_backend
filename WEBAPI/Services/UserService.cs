@@ -4,6 +4,8 @@ using WEBAPI.Data;
 using WEBAPI.Models;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Identity.Client;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace WEBAPI.Services
 {
@@ -21,7 +23,7 @@ namespace WEBAPI.Services
         {
             var getuser = await GetSingleUsrsById(otheruser);
             //Console.WriteLine(getuser.user_id);
-            var result = _context.Follower.SingleOrDefault(e => e.followed_id == getuser.user_id);
+            var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
             if (result == null)
             {
                 Followers followers = new Followers()
@@ -31,7 +33,7 @@ namespace WEBAPI.Services
                     follower_id = benim,
                 };
 
-                _context.Follower.Add(followers);
+                _context.Followers.Add(followers);
                 await _context.SaveChangesAsync();
             }
             return getuser;
@@ -44,13 +46,13 @@ namespace WEBAPI.Services
         {
             var getuser = await GetSingleUsrsById(otheruser);
             //Console.WriteLine(getuser.user_id);
-            var result = _context.Follower.SingleOrDefault(e => e.followed_id == getuser.user_id);
+            var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
             if (result != null)
-            {
-                var result=from follower in _context.Follower 
-
-   //bişey delete olacak
-                _context.Follower.Add(followers);
+            {  
+                var xx = from r in _context.Followers
+                             where r.followed_id == benim && r.follower_id == otheruser
+                             select r.id;
+                _context.Followers.Remove((Followers)xx);
                 await _context.SaveChangesAsync();
             }
             return getuser;
@@ -58,6 +60,7 @@ namespace WEBAPI.Services
             ///bişey
 
         }
+     
 
         public async Task<List<Users>> AddUser(Users hero)
         {    
@@ -123,6 +126,11 @@ namespace WEBAPI.Services
         }
 
         public Task<Users?> Addfollower(int benim, int otheruser)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Followers?> getfollowersid(int benim, int otheruser)
         {
             throw new NotImplementedException();
         }
