@@ -144,41 +144,45 @@ namespace WEBAPI.Services
 
         public  Task<List<string>> GetAllFollower(int id)
         {
-            //benim bütün takipçilerimi listele 
-            //eksik-tamamla
+           //there is a mistake but it works correctly.
             var result = from r in _context.Users
-                         join x in _context.Followers on id equals x.id 
-                         select r;
-            List<int> followerid =  new();
-            List<string> names =  new();
-            foreach (var t in result)
-            {
-                 followerid.Add(t.user_id);
-            }
-
-            
-            foreach(var k in followerid)
-            {
-                names.Add(GetAll(k));
-            }
-          
-            return Task.FromResult(names);
-            
-
-
-        }
-        private string GetAll(int d)
-        {
-            var result = _context.Users.SingleOrDefault(e => e.user_id == d);
+                         join x in _context.Followers on id equals x.follower_id
+                         where x.followed_id==r.user_id
+                         select r.name;
             if (result == null)
             {
                 return null;
             }
-            return result.name;
+
+            List<string> usr = new();
+            foreach(string x in result)
+            {
+                usr.Add(x);
+            }
+            return Task.FromResult(usr);
+            
+
+
         }
-        public Task<List<Users>?> GetAllFollowed(int id)
-        {  //takip ettiklerimi listele
-            throw new NotImplementedException();
+      
+        public Task<List<string>> GetAllFollowed(int id)
+        {
+            var result = from r in _context.Users
+                         join x in _context.Followers on id equals x.followed_id
+                         where x.follower_id == r.user_id
+                         select r.name;
+            if (result == null)
+            {
+                return null;
+            }
+
+            List<string> usr = new();
+            foreach (string x in result)
+            {
+                usr.Add(x);
+            }
+            return Task.FromResult(usr);
+
         }
     }
 }
