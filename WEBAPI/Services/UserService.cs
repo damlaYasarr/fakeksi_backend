@@ -46,23 +46,31 @@ namespace WEBAPI.Services
         {
             //deneyelim
             var getuser = await GetSingleUsrsById(otheruser);
-            //Console.WriteLine(getuser.user_id);
+            Console.WriteLine(getuser.user_id);
             var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
-            if (result != null)
+         
+             var xx = from r in _context.Followers
+                         where r.follower_id == benim && r.followed_id == otheruser
+                         select r;
+            int k = 0;
+               foreach (var t in xx)
             {
-                var xx = from r in _context.Followers
-                         where r.followed_id == benim && r.follower_id == otheruser
-                         select r.id;
-                Console.WriteLine("cıktı bu"+xx);           
-               // _context.Followers.Remove((Followers)xx);
-                //await _context.SaveChangesAsync();
+                 k = t.id;
+                
             }
+            
+
+             _context.Followers.Remove(finduser(k));
+             _context.SaveChanges();
             return getuser;
 
-            ///bişey
+        
 
         }
-     
+        private  Followers finduser(int id)
+        {
+            return _context.Followers.SingleOrDefault(e => e.id == id);
+        }
 
         public async Task<List<Users>> AddUser(Users hero)
         {    

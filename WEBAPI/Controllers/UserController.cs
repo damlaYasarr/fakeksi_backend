@@ -45,7 +45,7 @@ namespace WEBAPI.Controllers
         [HttpDelete("deletefollower")]
         public async Task<ActionResult<Users>> DeleteFollower(int id, int otherid)
         {
-            await _usrservice.DeleteFollower(id, otherid);
+             await _usrservice.DeleteFollower(id, otherid);
 
 
             return Ok("işlem başarılı");
