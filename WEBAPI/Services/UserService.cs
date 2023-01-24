@@ -6,6 +6,7 @@ using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Identity.Client;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Security.AccessControl;
 
 namespace WEBAPI.Services
 {
@@ -46,7 +47,7 @@ namespace WEBAPI.Services
         {
             //deneyelim
             var getuser = await GetSingleUsrsById(otheruser);
-            Console.WriteLine(getuser.user_id);
+            
             var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
          
              var xx = from r in _context.Followers
@@ -60,16 +61,20 @@ namespace WEBAPI.Services
             }
             
 
-             _context.Followers.Remove(finduser(k));
+             _context.Followers.Remove(Finduser(k));
              _context.SaveChanges();
             return getuser;
 
         
 
         }
-        private  Followers finduser(int id)
-        {
-            return _context.Followers.SingleOrDefault(e => e.id == id);
+        private  Followers Finduser(int id)
+        {   
+            var result= _context.Followers.SingleOrDefault(e => e.id == id);
+            if (result == null){
+                return null;
+            }
+            return result;
         }
 
         public async Task<List<Users>> AddUser(Users hero)
@@ -137,11 +142,43 @@ namespace WEBAPI.Services
 
        
 
-        public Task<List<Users>?> GetAllFollower(int id)
+        public  Task<List<string>> GetAllFollower(int id)
         {
+            //benim bütün takipçilerimi listele 
+            //eksik-tamamla
+            var result = from r in _context.Users
+                         join x in _context.Followers on id equals x.id 
+                         select r;
+            List<int> followerid =  new();
+            List<string> names =  new();
+            foreach (var t in result)
+            {
+                 followerid.Add(t.user_id);
+            }
+
+            
+            foreach(var k in followerid)
+            {
+                names.Add(GetAll(k));
+            }
+          
+            return Task.FromResult(names);
+            
+
+
+        }
+        private string GetAll(int d)
+        {
+            var result = _context.Users.SingleOrDefault(e => e.user_id == d);
+            if (result == null)
+            {
+                return null;
+            }
+            return result.name;
+        }
+        public Task<List<Users>?> GetAllFollowed(int id)
+        {  //takip ettiklerimi listele
             throw new NotImplementedException();
         }
-
-      
     }
 }

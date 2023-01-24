@@ -50,6 +50,14 @@ namespace WEBAPI.Controllers
 
             return Ok("işlem başarılı");
         }
+        [HttpGet("getAllFollower")]
+        public async Task<ActionResult<List<string>>> GetAllFollower(int id)
+        {
+            var result=await _usrservice.GetAllFollower(id);
+
+
+            return Ok(result);
+        }
         [HttpPost("Register")]
         public async Task<ActionResult<List<Users>>> AddHero(Users hero)
         {
