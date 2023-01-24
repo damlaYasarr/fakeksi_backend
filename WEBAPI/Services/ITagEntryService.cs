@@ -7,5 +7,6 @@ namespace WEBAPI.Services
     {
 
         Task<ShareTagwithEntry?> ShareTag(ShareTagwithEntry entyshare);
+        Task<Entry> addentry(int user_id, int tag_id, string def);
     }
 }

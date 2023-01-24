@@ -13,15 +13,15 @@ namespace WEBAPI.Services
         {
             _context = context;
         }
-       
-       
+
+
         public async Task<ShareTagwithEntry?> ShareTag(ShareTagwithEntry entyshare)
         {
             var person=_context.Users.SingleOrDefault(b=>b.user_id == entyshare.user_id);
             
                 var result = from r in _context.Users
                              join p in _context.Tags on entyshare.tag_id equals p.id //user id gerekli
-                             join u in _context.Entry on r.user_id equals u.user_id into ux
+                             join u in _context.Entry on entyshare.user_id equals u.user_id into ux
                              from u in ux.DefaultIfEmpty()
                              where p.user_id == entyshare.user_id
                              select new ShareTagwithEntry
@@ -42,5 +42,22 @@ namespace WEBAPI.Services
 
 
         }
+
+       public async Task<Entry> addentry(int user_id, int tag_id, string def)
+        {
+            var result = _context.Users.SingleOrDefault(b => b.user_id == user_id);
+            Entry entry = new Entry()
+            {
+                user_id = user_id,
+
+                tag_id = tag_id,
+                definition = def,
+            };
+            _context.Entry.Add(entry);
+            _context.SaveChanges();
+            return entry;
+        }
+
+      
     }
 }

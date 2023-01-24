@@ -22,6 +22,11 @@ namespace WEBAPI.Controllers
             await _tagentryservice.ShareTag(entyshare);
             return Ok("tag eklendi"); 
         }
-
+        [HttpPost("entryekle")]
+        public async Task<ActionResult<Entry>> AddEntry(int id, int tag_id,string def)
+        {
+            await _tagentryservice.addentry(id,tag_id, def);
+            return Ok("tag eklendi");
+        }
     }
 }
