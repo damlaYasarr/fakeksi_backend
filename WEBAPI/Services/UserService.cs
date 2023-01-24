@@ -44,6 +44,7 @@ namespace WEBAPI.Services
 
         public async Task<Users?> DeleteFollower(int benim, int otheruser)
         {
+            //deneyelim
             var getuser = await GetSingleUsrsById(otheruser);
             //Console.WriteLine(getuser.user_id);
             var result = _context.Followers.SingleOrDefault(e => e.followed_id == getuser.user_id);
