@@ -43,13 +43,13 @@ namespace WEBAPI.Services
 
         }
 
-       public async Task<Entry> addentry(int user_id, int tag_id, string def)
+       public async Task<Entry> Addentry(int user_id, int tag_id, string def)
         {
+            //create entry kod
             var result = _context.Users.SingleOrDefault(b => b.user_id == user_id);
             Entry entry = new Entry()
             {
                 user_id = user_id,
-
                 tag_id = tag_id,
                 definition = def,
             };
@@ -58,6 +58,33 @@ namespace WEBAPI.Services
             return entry;
         }
 
-      
+        public async Task<string?> GetTagContentwithId(int id)
+        {
+            var result= _context.Tags.SingleOrDefault(t => t.id == id);
+            if (result == null)
+            {
+                return "bu id ile tag yok";
+            }
+            return result.definition;
+        }
+
+        public Task<List<string>> GetTagAllTag()
+        {
+            var result=from t in _context.Tags
+                       select t.definition;
+
+            return Task.FromResult(result.ToList());
+        }
+
+        public Task<List<string>> GetTagwithEntries(int tag_id)
+        {
+
+            var xx = from x in _context.Entry
+                     where x.tag_id == tag_id
+                     select x.definition;
+
+            return Task.FromResult(xx.ToList());
+
+        }
     }
 }

@@ -25,8 +25,26 @@ namespace WEBAPI.Controllers
         [HttpPost("entryekle")]
         public async Task<ActionResult<Entry>> AddEntry(int id, int tag_id,string def)
         {
-            await _tagentryservice.addentry(id,tag_id, def);
+            await _tagentryservice.Addentry(id,tag_id, def);
             return Ok("tag eklendi");
+        }
+        [HttpGet("gettag")]
+        public async Task<ActionResult<string>> GetTag(int id)
+        {
+           var result= await _tagentryservice.GetTagContentwithId(id);
+            return Ok(result);
+        }
+        [HttpGet("getAlltag")]
+        public async Task<ActionResult<List<string>>> GetAllTag()
+        {
+            var result = await _tagentryservice.GetTagAllTag();
+            return Ok(result);
+        }
+        [HttpGet("getonestagallEntries")]
+        public async Task<ActionResult<List<string>>> GetAllentrieswithonetag(int id)
+        {
+            var result = await _tagentryservice.GetTagwithEntries(id);
+            return Ok(result);
         }
     }
 }
