@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System;
 using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
@@ -14,22 +15,24 @@ namespace WEBAPI.Services
             _context = context;
         }
 
+        //kişinin bütün yazdığı tagleri listele
+        //kişinin bütün entryleri listele
 
         public async Task<Tag> ShareTag(Tag tt)
         {
+            DateTime aDate = DateTime.Now;
+
             //yazılan tag'in id'sini almak gerekir mi?
             Tag shareentry = new Tag()
-            {  
-                user_id=tt.user_id,
-                definition=tt.definition
+            {
+                user_id = tt.user_id,
+                definition = tt.definition,
+                datetime = aDate
             };
 
             _context.Tags.Add(shareentry);
                 await _context.SaveChangesAsync();
                 return shareentry;
-            
-
-
 
 
         }
