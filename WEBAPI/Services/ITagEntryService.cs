@@ -6,7 +6,7 @@ namespace WEBAPI.Services
     public interface ITagEntryService
     {
 
-        Task<ShareTagwithEntry?> ShareTag(ShareTagwithEntry entyshare);
+        Task<Tag> ShareTag(Tag tt);
         Task<Entry> Addentry(int user_id, int tag_id, string def);
         Task<string> GetTagContentwithId(int id);
         Task<List<string>> GetTagAllTag();

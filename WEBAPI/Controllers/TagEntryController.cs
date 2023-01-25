@@ -17,9 +17,9 @@ namespace WEBAPI.Controllers
             _tagentryservice = tagentryservice;
         }
         [HttpPost("tagekle")]
-        public async Task<ActionResult<ShareTagwithEntry>> Addtag(ShareTagwithEntry entyshare)
+        public async Task<ActionResult<Tag>> Addtag(Tag tt)
         {
-            await _tagentryservice.ShareTag(entyshare);
+            await _tagentryservice.ShareTag(tt);
             return Ok("tag eklendi"); 
         }
         [HttpPost("entryekle")]
