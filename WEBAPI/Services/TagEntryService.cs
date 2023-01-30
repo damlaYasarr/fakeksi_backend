@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using System;
+using System.Linq;
 using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
@@ -80,5 +81,25 @@ namespace WEBAPI.Services
             return Task.FromResult(xx.ToList());
 
         }
+
+        public Task<List<GetContents>> GetAllTagwithEntries(int userid)
+        {
+            var result = from r in _context.Entry
+                         join x in _context.Users on userid equals x.user_id
+                         join u in _context.Tags on r.tag_id equals u.id into ux
+                         from u in ux.DefaultIfEmpty()
+                         where r.user_id == userid
+                         select new GetContents
+                         {
+                             name = x.name,
+                             enrydate = r.date_entry,
+                             tagname = u.definition,
+                             entries = r.definition
+                         };
+
+            return Task.FromResult(result.ToList());
+        }
+
+       
     }
 }

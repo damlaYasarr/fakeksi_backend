@@ -46,5 +46,12 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.GetTagwithEntries(id);
             return Ok(result);
         }
+        [HttpGet("getalltagandentrieswithUSER")]
+        public async Task<ActionResult<List<GetContents>>> GetAllTagwithEntries(int id)
+        {
+        
+            var result=  await _tagentryservice.GetTagwithEntries(id);
+            return Ok(result);
+        }
     }
 }
