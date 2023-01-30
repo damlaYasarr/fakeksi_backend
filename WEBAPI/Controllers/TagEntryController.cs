@@ -23,9 +23,9 @@ namespace WEBAPI.Controllers
             return Ok("tag eklendi"); 
         }
         [HttpPost("entryekle")]
-        public async Task<ActionResult<Entry>> AddEntry(int id, int tag_id,string def)
+        public async Task<ActionResult<Entry>> AddEntry(int user_id, int tag_id,string def)
         {
-            await _tagentryservice.Addentry(id,tag_id, def);
+            await _tagentryservice.Addentry(user_id,tag_id, def);
             return Ok("tag eklendi");
         }
         [HttpGet("gettag")]
