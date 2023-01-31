@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WEBAPI.Data;
 using WEBAPI.Models;
@@ -117,11 +118,21 @@ namespace WEBAPI.Services
 
         public Task<List<Tag>> ListTagsByDate()
         {
+            
+            DateTime aDate = DateTime.Now;
+            string XX = aDate.Year+"" + aDate.Month +""+ aDate.Day;
+            Console.Write(XX);
+            var result = from x in _context.Tags
+                         select x.datetime;
+            //veritabanından çekilen date nasıl düzenlenmeli araştır.
             throw new NotImplementedException();
+
+
         }
 
         public Task<List<Tag>> ListTagsByContent()
         {
+            //it will be made last .
             throw new NotImplementedException();
         }
 
@@ -131,7 +142,19 @@ namespace WEBAPI.Services
         }
 
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
+        {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
+
+            throw new NotImplementedException();
+        }
+        public async Task<string> AddLike(int user_id, int entry_id)
+        {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
+
+            return "like eklendi";
+        }
+
+        public Task<int> GetLikeCountLike(int user_id, int entry_id)
         {
+            //like count 
             throw new NotImplementedException();
         }
     }
