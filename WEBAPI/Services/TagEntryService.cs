@@ -107,10 +107,12 @@ namespace WEBAPI.Services
         }
 
        private string createCode()
-        { 
-
-            return "bla";
-
+        {
+            Random r = new Random();
+            var x = r.Next(0, 1000000);
+            string s = x.ToString("000000");
+            string result = "#" + s;
+            return result;
         }
 
         public Task<List<Tag>> ListTagsByDate()
