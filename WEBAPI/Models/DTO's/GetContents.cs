@@ -7,5 +7,6 @@
         public string tagname { get; set; }
         public DateTime enrydate { get; set; }
         public string entries { get; set; }
+        public string kod { get; set; }
     }
 }

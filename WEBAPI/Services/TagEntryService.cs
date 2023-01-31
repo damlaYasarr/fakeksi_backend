@@ -41,12 +41,15 @@ namespace WEBAPI.Services
        public async Task<Entry> Addentry(int user_id, int tag_id, string def)
         {
             //create entry kod
+            DateTime aDate = DateTime.Now;
             var result = _context.Users.SingleOrDefault(b => b.user_id == user_id);
             Entry entry = new Entry()
             {
                 user_id = user_id,
                 tag_id = tag_id,
                 definition = def,
+                date_entry = aDate,
+                kod = createCode(),
             };
             _context.Entry.Add(entry);
             _context.SaveChanges();
@@ -83,7 +86,7 @@ namespace WEBAPI.Services
         }
 
         public Task<List<GetContents>> GetAllTagwithEntries(int userid)
-        {//mantık hatası var incele.
+        {
             var result = from r in _context.Entry
                          join x in _context.Users on userid equals x.user_id
                          join u in _context.Tags on r.tag_id equals u.id into ux
@@ -94,7 +97,8 @@ namespace WEBAPI.Services
                              name = x.name,
                              enrydate = r.date_entry,
                              tagname = u.definition,
-                             entries = r.definition
+                             entries = r.definition,
+                             kod=r.kod
                          };
 
           
@@ -102,6 +106,31 @@ namespace WEBAPI.Services
             return Task.FromResult(result.ToList());
         }
 
-       
+       private string createCode()
+        { 
+
+            return "bla";
+
+        }
+
+        public Task<List<Tag>> ListTagsByDate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Tag>> ListTagsByContent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Tag>> ListTagsByRandomforToday()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

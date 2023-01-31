@@ -12,5 +12,9 @@ namespace WEBAPI.Services
         Task<List<string>> GetTagAllTag();
         Task<List<string>> GetTagwithEntries(int tag_id);
         Task<List<GetContents>> GetAllTagwithEntries(int userid);
+        Task<List<Tag>> ListTagsByDate();
+        Task<List<Tag>> ListTagsByContent();
+        Task<List<Tag>> ListTagsByRandomforToday();
+        Task<List<GetContents>> ListTagsandOneEntryByLikeCount();
     }
 }
