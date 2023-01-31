@@ -83,7 +83,7 @@ namespace WEBAPI.Services
         }
 
         public Task<List<GetContents>> GetAllTagwithEntries(int userid)
-        {
+        {//mantık hatası var incele.
             var result = from r in _context.Entry
                          join x in _context.Users on userid equals x.user_id
                          join u in _context.Tags on r.tag_id equals u.id into ux
@@ -96,6 +96,8 @@ namespace WEBAPI.Services
                              tagname = u.definition,
                              entries = r.definition
                          };
+
+          
 
             return Task.FromResult(result.ToList());
         }

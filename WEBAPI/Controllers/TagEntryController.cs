@@ -50,7 +50,7 @@ namespace WEBAPI.Controllers
         public async Task<ActionResult<List<GetContents>>> GetAllTagwithEntries(int id)
         {
         
-            var result=  await _tagentryservice.GetTagwithEntries(id);
+            var result=  await _tagentryservice.GetAllTagwithEntries(id);
             return Ok(result);
         }
     }
