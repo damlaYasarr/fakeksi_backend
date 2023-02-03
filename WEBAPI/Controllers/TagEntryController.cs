@@ -60,6 +60,13 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.ListTagsByDate();
             return Ok(result);
         }
-        
+        [HttpPost("addLike")]
+        public async Task<ActionResult<string>> AddLike(int userid, int entryid)
+        {
+
+            var result = await _tagentryservice.AddLike(userid, entryid);
+            return Ok(result);
+        }
+
     }
 }

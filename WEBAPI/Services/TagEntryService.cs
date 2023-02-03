@@ -152,20 +152,27 @@ namespace WEBAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<Tag>> ListTagsByRandomforToday()
-        {
-            throw new NotImplementedException();
-        }
+   
 
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
         {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
-
+            //random tag seçilecek bu tag'lardaki en yüksek like count olan entry çekilecek.
             throw new NotImplementedException();
         }
         public async Task<string> AddLike(int user_id, int entry_id)
-        {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
-            
-            return "like eklendi";
+        {//if else ekle
+            var resul = from x in _context.Likes
+                         where x.user_id == user_id && x.entry_id == entry_id
+                         select x.like_id;        
+           
+                Likes addlike = new Likes()
+                {
+                    user_id = user_id,
+                    entry_id = entry_id,
+                };
+                _context.Likes.Add(addlike);
+                await _context.SaveChangesAsync();
+                return "eklendi";
         }
 
         public Task<int> GetLikeCountLike(int user_id, int entry_id)

@@ -14,7 +14,6 @@ namespace WEBAPI.Services
         Task<List<GetContents>> GetAllTagwithEntries(int userid);
         Task<List<string>> ListTagsByDate();
         Task<List<Tag>> ListTagsByContent();
-        Task<List<Tag>> ListTagsByRandomforToday();
         Task<List<GetContents>> ListTagsandOneEntryByLikeCount();
         Task<string> AddLike(int user_id, int entry_id);
         Task<int> GetLikeCountLike(int user_id, int entry_id);
