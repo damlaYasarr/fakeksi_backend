@@ -159,6 +159,7 @@ namespace WEBAPI.Services
         {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
             //bütün tag içinden 
             //random tag seçilecek bu tag'lardaki en yüksek like count olan entry çekilecek.
+           
             throw new NotImplementedException();
         }
         public async Task<string> AddLike(int user_id, int entry_id)
