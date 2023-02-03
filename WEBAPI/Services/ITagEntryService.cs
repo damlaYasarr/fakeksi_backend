@@ -18,6 +18,7 @@ namespace WEBAPI.Services
         Task<string> AddLike(int user_id, int entry_id);
         Task<int> GetLikeCountLike( int entry_id);
         Task<List<string>> GetListLikesUserName(int entry_id);
-
+        Task<List<string>> TopTrendwithMaxEntryNumber();
+        Task<List<string>> TopEntrylikescount();
     }
 }

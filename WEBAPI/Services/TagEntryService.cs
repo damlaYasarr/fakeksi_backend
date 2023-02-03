@@ -130,7 +130,6 @@ namespace WEBAPI.Services
           
             var result = from x in _context.Tags
                          select x;
-            //tarih değeri
            
             List<string> listtag = new();
             foreach (var t in result)
@@ -158,6 +157,7 @@ namespace WEBAPI.Services
 
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
         {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
+            //bütün tag içinden 
             //random tag seçilecek bu tag'lardaki en yüksek like count olan entry çekilecek.
             throw new NotImplementedException();
         }
@@ -204,6 +204,18 @@ namespace WEBAPI.Services
 
             }
             return Task.FromResult(namelist);
+        }
+
+        public Task<List<string>> TopTrendwithMaxEntryNumber()
+        { 
+            //1 haftanın en fazla entry alan tagleri
+            throw new NotImplementedException();
+        }
+
+        public Task<List<string>> TopEntrylikescount()
+        { 
+            //dünün en fazla enrty alan tagları ve yanında count 
+            throw new NotImplementedException();
         }
     }
 }
