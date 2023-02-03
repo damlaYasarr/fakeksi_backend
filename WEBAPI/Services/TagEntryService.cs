@@ -118,14 +118,22 @@ namespace WEBAPI.Services
 
         public Task<List<Tag>> ListTagsByDate()
         {
-            
-            DateTime aDate = DateTime.Now;
-            string XX = aDate.Year+"" + aDate.Month +""+ aDate.Day;
-            Console.Write(XX);
+            //bugün atılan başlık bugün başlığı altında yayınlanacak
+
+            DateTime _date = DateTime.Now;
+            var _dateString = _date.ToString("dd/MM/yyyy");
+            Console.Write(_dateString);
             var result = from x in _context.Tags
-                         select x.datetime;
+                         select x;
+            foreach( var t in result)
+            {
+                string a=t.datetime.ToString();
+                string z=a.Split(" ")[0];
+                Console.Write(z);
+                
+            }
             //veritabanından çekilen date nasıl düzenlenmeli araştır.
-            throw new NotImplementedException();
+           return Task.FromResult(result.ToList());
 
 
         }
@@ -148,7 +156,7 @@ namespace WEBAPI.Services
         }
         public async Task<string> AddLike(int user_id, int entry_id)
         {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
-
+            
             return "like eklendi";
         }
 
