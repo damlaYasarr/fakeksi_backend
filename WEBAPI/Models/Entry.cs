@@ -7,6 +7,6 @@
         public int tag_id { get; set; }
         public string kod { get; set; }
         public string definition { get; set; }
-        public DateTime date_entry { get; set; } = DateTime.Now;
+        public string date_entry { get; set; } 
     }
 }

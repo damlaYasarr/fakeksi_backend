@@ -7,7 +7,7 @@ namespace WEBAPI.Models
         public int id { get; set; }
         public int user_id { get; set; }
         public string definition { get; set; }
-        public DateTime datetime { get; set; } = DateTime.Now;
+        public string datetime { get; set; }
       
     }
 }

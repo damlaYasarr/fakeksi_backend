@@ -54,7 +54,7 @@ namespace WEBAPI.Controllers
             return Ok(result);
         }
         [HttpGet("listAllTagByDate")]
-        public async Task<ActionResult<List<Tag>>> ListTagsByDate()
+        public async Task<ActionResult<List<string>>> ListTagsByDate()
         {
 
             var result = await _tagentryservice.ListTagsByDate();

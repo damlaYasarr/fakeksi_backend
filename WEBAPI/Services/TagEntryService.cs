@@ -22,14 +22,15 @@ namespace WEBAPI.Services
 
         public async Task<Tag> ShareTag(Tag tt)
         {
-            DateTime aDate = DateTime.Now;
-
+            
+            DateTime dt = DateTime.Now;
+            string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
             //yazılan tag'in id'sini almak gerekir mi?
             Tag shareentry = new Tag()
             {
                 user_id = tt.user_id,
                 definition = tt.definition,
-                datetime = aDate
+                datetime = s
             };
 
             _context.Tags.Add(shareentry);
@@ -42,14 +43,16 @@ namespace WEBAPI.Services
        public async Task<Entry> Addentry(int user_id, int tag_id, string def)
         {
             //create entry kod
-            DateTime aDate = DateTime.Now;
+            DateTime dt = DateTime.Now; // Or whatever
+            string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
+
             var result = _context.Users.SingleOrDefault(b => b.user_id == user_id);
             Entry entry = new Entry()
             {
                 user_id = user_id,
                 tag_id = tag_id,
                 definition = def,
-                date_entry = aDate,
+                date_entry = s,
                 kod = createCode(),
             };
             _context.Entry.Add(entry);
@@ -116,24 +119,29 @@ namespace WEBAPI.Services
             return result;
         }
 
-        public Task<List<Tag>> ListTagsByDate()
+        public Task<List<string>> ListTagsByDate()
         {
             //bugün atılan başlık bugün başlığı altında yayınlanacak
-
-            DateTime _date = DateTime.Now;
-            var _dateString = _date.ToString("dd/MM/yyyy");
-            Console.Write(_dateString);
+            DateTime dt = DateTime.Now;
+            string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
+            var firstvalue = s.Split(" ")[0];
+          
             var result = from x in _context.Tags
                          select x;
-            foreach( var t in result)
+            //tarih değeri
+           
+            List<string> listtag = new();
+            foreach (var t in result)
             {
-                string a=t.datetime.ToString();
-                string z=a.Split(" ")[0];
-                Console.Write(z);
-                
+                var xx = t.datetime.Split(" ")[0];
+                if (firstvalue == xx)
+                {
+                    listtag.Add(t.definition);
+                    
+                }
             }
-            //veritabanından çekilen date nasıl düzenlenmeli araştır.
-           return Task.FromResult(result.ToList());
+            //GETİRİLEN LİSTE RANDOM YAPILACAK 
+            return Task.FromResult(listtag);
 
 
         }
