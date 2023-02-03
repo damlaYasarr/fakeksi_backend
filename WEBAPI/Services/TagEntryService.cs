@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,11 +162,12 @@ namespace WEBAPI.Services
             throw new NotImplementedException();
         }
         public async Task<string> AddLike(int user_id, int entry_id)
-        {//if else ekle
+        {
             var resul = from x in _context.Likes
                          where x.user_id == user_id && x.entry_id == entry_id
-                         select x.like_id;        
-           
+                         select x.like_id;
+            if (resul.IsNullOrEmpty())
+            {
                 Likes addlike = new Likes()
                 {
                     user_id = user_id,
@@ -173,12 +176,34 @@ namespace WEBAPI.Services
                 _context.Likes.Add(addlike);
                 await _context.SaveChangesAsync();
                 return "eklendi";
+            }
+            else
+            {
+                return "kişi var";
+            }
+             
         }
 
-        public Task<int> GetLikeCountLike(int user_id, int entry_id)
+        public Task<int> GetLikeCountLike( int entry_id)
         {
-            //like count 
-            throw new NotImplementedException();
+            var result = from x in _context.Likes
+                         where x.entry_id == entry_id
+                         select x.user_id;
+            return Task.FromResult(result.Count());
+        }
+        public Task<List<string>> GetListLikesUserName(int entry_id)
+        {
+            var result = from x in _context.Users
+                         join r in _context.Likes on x.user_id equals r.user_id
+                         where r.entry_id == entry_id
+                         select x;
+            List<string> namelist = new(); 
+            foreach(var tt in result)
+            {
+                namelist.Add(tt.name);
+
+            }
+            return Task.FromResult(namelist);
         }
     }
 }

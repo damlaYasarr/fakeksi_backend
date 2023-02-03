@@ -61,12 +61,25 @@ namespace WEBAPI.Controllers
             return Ok(result);
         }
         [HttpPost("addLike")]
-        public async Task<ActionResult<string>> AddLike(int userid, int entryid)
+        public async Task<ActionResult<int>> AddLike(int userid, int entryid)
         {
 
             var result = await _tagentryservice.AddLike(userid, entryid);
             return Ok(result);
         }
+        [HttpGet("getlikecount")]
+        public async Task<ActionResult<string>> GetLikeCount( int entryid)
+        {
 
+            var result = await _tagentryservice.GetLikeCountLike( entryid);
+            return Ok(result);
+        }
+        [HttpGet("getlikesusersname")]
+        public async Task<ActionResult<string>> Getlikeusername(int entryid)
+        {
+
+            var result = await _tagentryservice.GetListLikesUserName(entryid);
+            return Ok(result);
+        }
     }
 }
