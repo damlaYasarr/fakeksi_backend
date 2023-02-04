@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITagEntryService, TagEntryService>();
 builder.Services.AddDbContext<DataContext>();
+builder.Services.AddSignalR();
 var app = builder.Build();
 builder.Services.AddCors();
 /**builder.Services.AddCors(options =>
