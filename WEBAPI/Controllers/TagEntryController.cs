@@ -95,5 +95,13 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.TopEntrylikescount();
             return Ok(result);
         }
+        [HttpGet("GetMOSTlikesEntryDetailwithContent")]
+        public async Task<ActionResult<GetTagandEntryCount>> ListTagsandOneEntryByLikeCount()
+        {
+
+            var result = await _tagentryservice.ListTagsandOneEntryByLikeCount();
+            return Ok(result);
+        }
+        
     }
 }

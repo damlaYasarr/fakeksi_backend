@@ -158,11 +158,26 @@ namespace WEBAPI.Services
    
 
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
-        { 
-            //tag içinden en yüksek like alan entry getirilecek.
-            //user-tag-entry-like
-         
-            throw new NotImplementedException();
+        {//pretty hard
+            var query = from entry in _context.Entry
+                        join popularEntry in (from like in _context.Likes
+                                              group like by like.entry_id into g
+                                              orderby g.Count() descending
+                                              select g.Key)
+                        on entry.id equals popularEntry
+                        join tag in _context.Tags
+                        on entry.tag_id equals tag.id
+                        join user in _context.Users
+                        on entry.user_id equals user.user_id
+                        select new GetContents { 
+                            name=user.name, 
+                            tagname=tag.definition,
+                            enrydate=entry.date_entry,
+                            entries=entry.definition,
+                            kod=entry.kod,
+                            likecount=popularEntry, };
+            var result = query.FirstOrDefault();
+           return Task.FromResult(query.ToList());
         }
         public async Task<string> AddLike(int user_id, int entry_id)
         {
