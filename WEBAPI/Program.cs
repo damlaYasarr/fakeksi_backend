@@ -14,14 +14,14 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITagEntryService, TagEntryService>();
 builder.Services.AddDbContext<DataContext>();
 var app = builder.Build();
-builder.Services.AddCors(options =>
+/**builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
                           policy.WithOrigins("http://localhost:4200/").AllowAnyHeader().AllowAnyOrigin();
                       });
-});
+});*/
 
 
 //research : builder log detail

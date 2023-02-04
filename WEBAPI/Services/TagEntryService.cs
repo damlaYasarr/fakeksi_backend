@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace WEBAPI.Services
     public class TagEntryService : ITagEntryService
     {
         private readonly DataContext _context;
+        private object definition;
 
         public TagEntryService(DataContext context)
         {
@@ -184,6 +186,24 @@ namespace WEBAPI.Services
             }
              
         }
+        public async Task<string> DeleteLike(int user_id, int entry_id)
+        {
+            var resul = from x in _context.Likes
+                        where x.user_id == user_id && x.entry_id == entry_id
+                        select x;
+            if (!resul.IsNullOrEmpty())
+            {
+               
+                _context.Likes.Remove((Likes)resul);
+                await _context.SaveChangesAsync();
+                return "like silindi";
+            }
+            else
+            {
+                return "like yok";
+            }
+
+        }
 
         public Task<int> GetLikeCountLike( int entry_id)
         {
@@ -213,10 +233,22 @@ namespace WEBAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<string>> TopEntrylikescount()
-        { 
-            //dünün en fazla enrty alan tagları ve yanında count 
-            throw new NotImplementedException();
+        public Task<List<GetTagandEntryCount>> TopEntrylikescount()
+        {
+            //dünün en fazla enrty alan tagları ve yanında count
+            var result1 = from t in _context.Tags
+                          join e in _context.Entry on t.id equals e.tag_id
+                          group t.definition by t.definition into g
+                          select new GetTagandEntryCount { Tag = g.Key, entryCount = g.Count() };
+
+
+
+
+
+
+
+
+            return Task.FromResult( result1.ToList());
         }
     }
 }

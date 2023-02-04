@@ -81,5 +81,19 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.GetListLikesUserName(entryid);
             return Ok(result);
         }
+        [HttpDelete("deletelike")]
+        public async Task<ActionResult<string>> DeleteLike(int userid,int entryid)
+        {
+
+            var result = await _tagentryservice.DeleteLike(userid,entryid);
+            return Ok(result);
+        }
+        [HttpGet("getYesterdaytrendTagandcount")]
+        public async Task<ActionResult<GetTagandEntryCount>> GetTrendTagandEntryCount()
+        {
+
+            var result = await _tagentryservice.TopEntrylikescount();
+            return Ok(result);
+        }
     }
 }
