@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Identity.Client;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Security.AccessControl;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace WEBAPI.Services
 {
@@ -183,6 +185,31 @@ namespace WEBAPI.Services
             }
             return Task.FromResult(usr);
 
+        }
+        public async Task SendMessage(string user, string message)
+        {
+            using (var client = new HttpClient())
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(new { User = user, Message = message }), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("http://your-api-url/chat", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Message was successfully sent
+                }
+                else
+                {
+                    // Handle error
+                }
+            }
+        }
+
+
+       
+
+        public Task ReceiveMessage(string user, string message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -158,10 +158,10 @@ namespace WEBAPI.Services
    
 
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
-        {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
-            //bütün tag içinden 
+        { 
             //tag içinden en yüksek like alan entry getirilecek.
-
+            //user-tag-entry-like
+         
             throw new NotImplementedException();
         }
         public async Task<string> AddLike(int user_id, int entry_id)
@@ -187,7 +187,7 @@ namespace WEBAPI.Services
              
         }
         public async Task<string> DeleteLike(int user_id, int entry_id)
-        {
+        {//çalışmıyor kontrol et
             var resul = from x in _context.Likes
                         where x.user_id == user_id && x.entry_id == entry_id
                         select x;
