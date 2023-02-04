@@ -160,8 +160,8 @@ namespace WEBAPI.Services
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
         {//1.user 5. entry beğendi beğendi ise veritabanına id eklenmeli
             //bütün tag içinden 
-            //random tag seçilecek bu tag'lardaki en yüksek like count olan entry çekilecek.
-           
+            //tag içinden en yüksek like alan entry getirilecek.
+
             throw new NotImplementedException();
         }
         public async Task<string> AddLike(int user_id, int entry_id)
@@ -235,17 +235,11 @@ namespace WEBAPI.Services
 
         public Task<List<GetTagandEntryCount>> TopEntrylikescount()
         {
-            //dünün en fazla enrty alan tagları ve yanında count
+            
             var result1 = from t in _context.Tags
                           join e in _context.Entry on t.id equals e.tag_id
                           group t.definition by t.definition into g
                           select new GetTagandEntryCount { Tag = g.Key, entryCount = g.Count() };
-
-
-
-
-
-
 
 
             return Task.FromResult( result1.ToList());

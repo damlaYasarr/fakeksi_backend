@@ -88,7 +88,7 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.DeleteLike(userid,entryid);
             return Ok(result);
         }
-        [HttpGet("getYesterdaytrendTagandcount")]
+        [HttpGet("GetTagandcount")]
         public async Task<ActionResult<GetTagandEntryCount>> GetTrendTagandEntryCount()
         {
 

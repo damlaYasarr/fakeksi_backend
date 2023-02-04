@@ -14,6 +14,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITagEntryService, TagEntryService>();
 builder.Services.AddDbContext<DataContext>();
 var app = builder.Build();
+builder.Services.AddCors();
 /**builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -22,6 +23,7 @@ var app = builder.Build();
                           policy.WithOrigins("http://localhost:4200/").AllowAnyHeader().AllowAnyOrigin();
                       });
 });*/
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
 //research : builder log detail

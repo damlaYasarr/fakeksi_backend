@@ -8,5 +8,6 @@
         public string enrydate { get; set; }
         public string entries { get; set; }
         public string kod { get; set; }
+        public int likecount { get; set; }
     }
 }
