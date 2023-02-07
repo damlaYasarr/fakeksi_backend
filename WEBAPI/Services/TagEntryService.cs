@@ -14,7 +14,7 @@ namespace WEBAPI.Services
     public class TagEntryService : ITagEntryService
     {
         private readonly DataContext _context;
-        private object definition;
+       
 
         public TagEntryService(DataContext context)
         {
@@ -175,7 +175,7 @@ namespace WEBAPI.Services
                             enrydate=entry.date_entry,
                             entries=entry.definition,
                             kod=entry.kod,
-                            likecount=popularEntry, };
+                            likecount=popularEntry };
             var result = query.FirstOrDefault();
            return Task.FromResult(query.ToList());
         }

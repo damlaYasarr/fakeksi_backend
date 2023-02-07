@@ -16,15 +16,8 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddSignalR();
 var app = builder.Build();
 builder.Services.AddCors();
-/**builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:4200/").AllowAnyHeader().AllowAnyOrigin();
-                      });
-});*/
-app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.UseCors(builder => builder.WithOrigins("https://localhost:7095/swagger/index.html").AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
 //research : builder log detail
