@@ -6,7 +6,6 @@ using WEBAPI.Services;
 namespace WEBAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class TagEntryController : Controller
     {
 
@@ -46,7 +45,7 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.GetTagwithEntries(id);
             return Ok(result);
         }
-        [HttpGet("getalltagandentrieswithUSER")]
+        [HttpGet("getalltagandentrieswithUSER{id}")]
         public async Task<ActionResult<List<GetContents>>> GetAllTagwithEntries(int id)
         {
         

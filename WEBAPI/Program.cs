@@ -3,7 +3,6 @@ using WEBAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -17,7 +16,6 @@ builder.Services.AddSignalR();
 var app = builder.Build();
 builder.Services.AddCors();
 
-app.UseCors(builder => builder.WithOrigins("https://localhost:7095/swagger/index.html").AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
 //research : builder log detail
@@ -28,7 +26,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    );
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -107,9 +107,9 @@ namespace WEBAPI.Services
             return person;
         }
 
-        public async Task<Users?> Login(int id, string email, string password)
+        public async Task<Users?> Login(string email, string password)
         {
-            var result = _context.Users.SingleOrDefault(e => e.user_id == id); 
+            var result = _context.Users.SingleOrDefault(e => e.email == email); 
             if (result == null)
             {
                 return null;

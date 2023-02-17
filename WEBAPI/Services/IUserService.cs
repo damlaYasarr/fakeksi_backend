@@ -7,7 +7,7 @@ namespace WEBAPI.Services
         Task<List<Users>> GetAllUsers();
         Task<Users?> GetSingleUsrsById(int id);
         Task<List<Users>> AddUser(Users hero);
-        Task<Users?> Login(int id, string email, string password);
+        Task<Users?> Login(string email, string password);
         Task<Users?> Logout(int id);
         Task<Users?> Addfollower(int benim, int otheruser);
         Task<Users?> DeleteFollower(int benim, int otheruser);

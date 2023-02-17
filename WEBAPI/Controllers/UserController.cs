@@ -6,7 +6,6 @@ using WEBAPI.Services;
 namespace WEBAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class UserController : ControllerBase
     {
         private readonly IUserService _usrservice;
@@ -73,9 +72,9 @@ namespace WEBAPI.Controllers
             return Ok(result);
         }
         [HttpPost("Login")]
-        public async Task<ActionResult<List<Users>>> Login(int id,string email, string password)
+        public async Task<ActionResult<List<Users>>> Login([FromBody]string email, [FromBody] string password)
         {
-            var result = await _usrservice.Login(id, email,password);
+            var result = await _usrservice.Login( email,password);
             return Ok(result);
         }
         [HttpGet("Logout")]
