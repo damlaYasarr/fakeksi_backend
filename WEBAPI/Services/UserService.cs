@@ -107,24 +107,25 @@ namespace WEBAPI.Services
             return person;
         }
 
-        public async Task<Users?> Login(string email, string password)
+       public async Task<Users?> Login(string email, string password)
         {
-            var result = _context.Users.SingleOrDefault(e => e.email == email); 
-            if (result == null)
-            {
-                return null;
-            }
-            else
-            {
-                if(result.email == email & result.password==password) {
-                   
-                        result.isActive = true;
-                        await _context.SaveChangesAsync();
-                    
-                }
-            }
-                
-            return result;
+            /* var result = _context.Users.SingleOrDefault(e => e.email == email); 
+             if (result == null)
+             {
+                 return null;
+             }
+             else
+             {
+                 if(result.email == email & result.password==password) {
+
+                         result.isActive = true;
+                         await _context.SaveChangesAsync();
+
+                 }
+             }
+
+             return result; **/
+            throw new NotImplementedException();
         }
 
         public async Task<Users?> Logout(int id)

@@ -71,6 +71,7 @@ namespace WEBAPI.Controllers
             var result = await _usrservice.AddUser(hero);
             return Ok(result);
         }
+
         [HttpPost("Login")]
         public async Task<ActionResult<List<Users>>> Login([FromBody]string email, [FromBody] string password)
         {
