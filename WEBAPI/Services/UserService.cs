@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+﻿
 using Microsoft.EntityFrameworkCore;
 using WEBAPI.Data;
 using WEBAPI.Models;
@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System.Security.AccessControl;
 using Newtonsoft.Json;
 using System.Text;
+using WEBAPI.Utilities.Security.JWT;
+using WEBAPI.Constants;
+using WEBAPI.Models.DTO_s.UserDTos;
+using WEBAPI.Utilities.Security.Hashing;
 
 namespace WEBAPI.Services
 {
@@ -16,10 +20,12 @@ namespace WEBAPI.Services
     {
       
         private readonly DataContext _context;
-
+       
+     
         public UserService(DataContext context)
         {
             _context = context;
+          
         }
         public async Task<Users?> Addfollower(int benim, int otheruser)
 
@@ -79,13 +85,13 @@ namespace WEBAPI.Services
             return result;
         }
 
-        public async Task<List<Users>> AddUser(Users hero)
-        {    
-            hero.isActive = false;
-           _context.Users.Add(hero);
-             await _context.SaveChangesAsync();
-            return await _context.Users.ToListAsync();
-        }
+        /*  public async Task<List<Users>> AddUser(Users hero)
+          {    
+              hero.isActive = false;
+             _context.Users.Add(hero);
+               await _context.SaveChangesAsync();
+              return await _context.Users.ToListAsync();
+          }*/
 
         public Task<List<Users>?> DeleteUser(int id)
         {
@@ -107,26 +113,7 @@ namespace WEBAPI.Services
             return person;
         }
 
-       public async Task<Users?> Login(string email, string password)
-        {
-            /* var result = _context.Users.SingleOrDefault(e => e.email == email); 
-             if (result == null)
-             {
-                 return null;
-             }
-             else
-             {
-                 if(result.email == email & result.password==password) {
 
-                         result.isActive = true;
-                         await _context.SaveChangesAsync();
-
-                 }
-             }
-
-             return result; **/
-            throw new NotImplementedException();
-        }
 
         public async Task<Users?> Logout(int id)
         {     
@@ -227,13 +214,15 @@ namespace WEBAPI.Services
         }
 
         public void Add(Users user)
-        {//veritabanına user eklenir
-            throw new NotImplementedException();
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
         }
 
         public Users GetByMail(string email)
         {
-            throw new NotImplementedException();
+
+            return _context.Users.SingleOrDefault(e => e.email == email);
         }
     }
 }

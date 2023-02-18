@@ -1,11 +1,10 @@
+
+using Autofac.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
+
 using WEBAPI.Data;
 using WEBAPI.Services;
-using WEBAPI.Utilities.IOC;
 using WEBAPI.Utilities.Security.Encryption;
-using WEBAPI.Utilities.Security.JWT;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,29 +14,21 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddSingleton<IAuthService, AuthService>();
+
 builder.Services.AddScoped<ITagEntryService, TagEntryService>();
-builder.Services.AddScoped<IAuthService, AuthManager>();
+
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddSignalR();
 
-var app = builder.Build();
+builder.Services.AddRazorPages();
+
+
 builder.Services.AddCors();
-//var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
 
-//research : builder log detail
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    );
 /*
             services.AddDependencyResolvers(new ICoreModule[]
             {
@@ -58,12 +49,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenoptions.SecurityKey)
     };
-});
-
+}); var app = builder.Build();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    );
 app.UseHttpsRedirection();
-
+app.UseAuthentication();//first
 app.UseAuthorization();
-app.UseAuthentication();
+app.UseRouting();
 app.MapControllers();
 
 app.Run();

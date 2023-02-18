@@ -1,4 +1,5 @@
-﻿using WEBAPI.Constants;
+﻿using Microsoft.EntityFrameworkCore;
+using WEBAPI.Constants;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Utilities.Security.Hashing;
@@ -6,39 +7,34 @@ using WEBAPI.Utilities.Security.JWT;
 
 namespace WEBAPI.Services
 {
-    public class AuthManager : IAuthService
+    public class AuthService : IAuthService
     {
+        private readonly IUserService _userService;
+        private readonly ITokenHelper _tokenHelper;
 
-        private IUserService _userService;
-        private ITokenHelper _tokenHelper;
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthService(IUserService userService, ITokenHelper tokenHelper)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
         }
-        public Task<AccessToken> CreateAccessToken(Users user)
-        {
-            var claims = _userService.GetOperationClaims(user);
-            var accessToken = _tokenHelper.CreateToken(user, claims);
-            return Task.FromResult(accessToken);
-        }
 
-        public Task Login(UserForLoginDto userForLoginDto)
+
+
+        public Users Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);
             if (userToCheck == null)
             {
-                return Task.FromResult(Messages.UserNotFound);
+                return null;
             }
-            if (!Hashinghelper.VerifyPasswordHash(userForLoginDto.password, userToCheck.PasswordHash, userToCheck.PasswordSalt))
+            if (!Hashinghelper.VerifyPasswordHash(userForLoginDto.password, userToCheck.passwordhash, userToCheck.passwordsalt))
             {
-                return Task.FromResult(Messages.PasswordError);
+                return null;
             }
-            return Task.FromResult(Messages.SuccessfulLogin
-                );
+            return userToCheck;
         }
 
-        public Task<Users> Register(UserForRegisterDto userForRegisterDto, string password)
+        public Users Register(UserForRegisterDto userForRegisterDto, string password)
         {
             byte[] passwordHash, passwordSalt;
             Hashinghelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -46,24 +42,36 @@ namespace WEBAPI.Services
             {
                 email = userForRegisterDto.email,
                 name = userForRegisterDto.name,
-            
+
                 passwordhash = passwordHash,
                 passwordsalt = passwordSalt,
                 isActive = true
             };
             _userService.Add(user);
-            return Task.FromResult(user);
-           // throw new NotImplementedException();
+            return user;
+            // throw new NotImplementedException();
         }
 
         public Task UserExists(string email)
         {
-            if (_userService.GetByMail(email) != null)
+            var result = _userService.GetByMail(email);
+            if (result != null)
             {
                 return Task.FromResult(Messages.UserAlreadyExists
                     );
             }
             return Task.FromResult("user var");
         }
+
+
+
+
+        public Task<AccessToken> CreateAccessToken(Users user)
+        {
+            var claims = _userService.GetOperationClaims(user);
+            var accessToken = _tokenHelper.CreateToken(user, claims);
+            return Task.FromResult(accessToken);
+        }
+
     }
-}
+    }

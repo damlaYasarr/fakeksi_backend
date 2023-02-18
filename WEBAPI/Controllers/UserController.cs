@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WEBAPI.Models;
+using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
 
 namespace WEBAPI.Controllers
@@ -13,6 +14,7 @@ namespace WEBAPI.Controllers
         public UserController(IUserService usrservice)
         {
             _usrservice = usrservice;
+            
         }
 
         [HttpGet]
@@ -65,19 +67,7 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-        [HttpPost("Register")]
-        public async Task<ActionResult<List<Users>>> AddHero(Users hero)
-        {
-            var result = await _usrservice.AddUser(hero);
-            return Ok(result);
-        }
-
-        [HttpPost("Login")]
-        public async Task<ActionResult<List<Users>>> Login([FromBody]string email, [FromBody] string password)
-        {
-            var result = await _usrservice.Login( email,password);
-            return Ok(result);
-        }
+      
         [HttpGet("Logout")]
         public async Task<ActionResult<List<Users>>> Logout(int id)
         {

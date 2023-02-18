@@ -1,4 +1,7 @@
-﻿using WEBAPI.Models;
+﻿
+using WEBAPI.Models;
+using WEBAPI.Models.DTO_s.UserDTos;
+using WEBAPI.Utilities.Security.JWT;
 
 namespace WEBAPI.Services
 {
@@ -6,8 +9,8 @@ namespace WEBAPI.Services
     {
         Task<List<Users>> GetAllUsers();
         Task<Users?> GetSingleUsrsById(int id);
-        Task<List<Users>> AddUser(Users hero);
-        Task<Users?> Login(string email, string password);
+       // Task<List<Users>> AddUser(Users hero);
+        //Task<Users?> Login(string email, string password);
         Task<Users?> Logout(int id);
         Task<Users?> Addfollower(int benim, int otheruser);
         Task<Users?> DeleteFollower(int benim, int otheruser);
@@ -18,6 +21,9 @@ namespace WEBAPI.Services
 
         Task SendMessage(string user, string message);
         Task ReceiveMessage(string user, string message);
+
+
+
 
         List<OperationClaim> GetOperationClaims(Users user);
         void Add(Users user);
