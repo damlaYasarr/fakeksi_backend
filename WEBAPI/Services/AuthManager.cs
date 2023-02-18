@@ -18,7 +18,9 @@ namespace WEBAPI.Services
         }
         public Task<AccessToken> CreateAccessToken(Users user)
         {
-            throw new NotImplementedException();
+            var claims = _userService.GetOperationClaims(user);
+            var accessToken = _tokenHelper.CreateToken(user, claims);
+            return Task.FromResult(accessToken);
         }
 
         public Task Login(UserForLoginDto userForLoginDto)
@@ -56,7 +58,12 @@ namespace WEBAPI.Services
 
         public Task UserExists(string email)
         {
-            throw new NotImplementedException();
+            if (_userService.GetByMail(email) != null)
+            {
+                return Task.FromResult(Messages.UserAlreadyExists
+                    );
+            }
+            return Task.FromResult("user var");
         }
     }
 }
