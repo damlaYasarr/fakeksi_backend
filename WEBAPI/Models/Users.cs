@@ -11,9 +11,22 @@ namespace WEBAPI.Models
         public string email { get; set; } = string.Empty;
         public string register_date { get; set; }
 
-        public string password { get; set; } = string.Empty;
+        public byte[] passwordhash { get; set; } 
+        public byte [] passwordsalt { get; set; } 
         public bool isActive { get; set; } 
 
+    }
+    class OperationClaim
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+    }
+    class UserOperationClaim
+    {
+        public int Id { get; set; }
+        public int Userid { get; set; }
+        public int Operationid { get; set; }
     }
 }
  

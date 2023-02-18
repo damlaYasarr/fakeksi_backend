@@ -25,6 +25,7 @@ namespace WEBAPI.Data
         public DbSet<Followers> Followers { get; set; }
         public DbSet<Likes> Likes { get; set; }
         public DbSet<Msg> Msgs { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
     }
 }
