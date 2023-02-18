@@ -212,5 +212,28 @@ namespace WEBAPI.Services
         {
             throw new NotImplementedException();
         }
+
+
+        public List<OperationClaim> GetOperationClaims(Users user)
+        {
+                var result = from operationClaim in _context.OperationClaims
+                             join userOperationClaim in _context.UserOperationClaims
+                                 on operationClaim.Id equals userOperationClaim.Operationid
+                             where userOperationClaim.Userid == user.user_id
+                             select new OperationClaim { Id = operationClaim.Id, Name = operationClaim.Name };
+                return result.ToList();
+
+            
+        }
+
+        public void Add(Users user)
+        {//veritabanına user eklenir
+            throw new NotImplementedException();
+        }
+
+        public Users GetByMail(string email)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -18,5 +18,9 @@ namespace WEBAPI.Services
 
         Task SendMessage(string user, string message);
         Task ReceiveMessage(string user, string message);
+
+        List<OperationClaim> GetOperationClaims(Users user);
+        void Add(Users user);
+        Users GetByMail(string email);
     }
 }
