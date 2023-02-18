@@ -16,17 +16,5 @@ namespace WEBAPI.Models
         public bool isActive { get; set; } 
 
     }
-    class OperationClaim
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-    }
-    class UserOperationClaim
-    {
-        public int Id { get; set; }
-        public int Userid { get; set; }
-        public int Operationid { get; set; }
-    }
 }
  
