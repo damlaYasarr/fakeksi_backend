@@ -1,5 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using WEBAPI.Data;
 using WEBAPI.Services;
+using WEBAPI.Utilities.IOC;
+using WEBAPI.Utilities.Security.Encryption;
+using WEBAPI.Utilities.Security.JWT;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,32 +39,27 @@ app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyOrig
                     .AllowAnyHeader()
                     );
 /*
- 
-  var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters=new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = tokenOptions.Issuer,
-                        ValidAudience = tokenOptions.Audience,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
-                    };
-                });
-
-           
-
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule(),
             });
  
  */
+var tokenoptions = builder.Configuration.GetSection("TokenOptions").Get<WEBAPI.Utilities.Security.JWT.TokenOptions>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidIssuer = tokenoptions.Issuer,
+        ValidAudience = tokenoptions.Audience,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenoptions.SecurityKey)
+    };
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
