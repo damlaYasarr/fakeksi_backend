@@ -23,6 +23,9 @@ namespace WEBAPI.Services
         public Users Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);
+
+            return userToCheck;
+            /*
             if (userToCheck == null)
             {
                 return null;
@@ -30,19 +33,22 @@ namespace WEBAPI.Services
             if (!Hashinghelper.VerifyPasswordHash(userForLoginDto.password, userToCheck.passwordhash, userToCheck.passwordsalt))
             {
                 return null;
-            }
-            return userToCheck;
+            }*/
+
         }
 
         public Users Register(UserForRegisterDto userForRegisterDto, string password)
         {
             byte[] passwordHash, passwordSalt;
             Hashinghelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+
+            DateTime dt = DateTime.Now;
+            string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
             var user = new Users
             {
                 email = userForRegisterDto.email,
                 name = userForRegisterDto.name,
-
+                register_date = s,
                 passwordhash = passwordHash,
                 passwordsalt = passwordSalt,
                 isActive = true
