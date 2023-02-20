@@ -203,9 +203,9 @@ namespace WEBAPI.Services
 
         public List<OperationClaim> GetOperationClaims(Users user)
         {
-                var result = from operationClaim in _context.OperationClaims
-                             join userOperationClaim in _context.UserOperationClaims
-                                 on operationClaim.Id equals userOperationClaim.Operationid
+                var result = from operationClaim in _context.OperationClaim
+                             join userOperationClaim in _context.UserOperationClaim
+                                 on operationClaim.Id equals userOperationClaim.operationid
                              where userOperationClaim.Userid == user.user_id
                              select new OperationClaim { Id = operationClaim.Id, Name = operationClaim.Name };
                 return result.ToList();

@@ -16,7 +16,7 @@ namespace WEBAPI.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login(UserForLoginDto userForLoginDto)
+        public async Task<ActionResult>Login(UserForLoginDto userForLoginDto)
         {
             var userToLogin = _usrservice.Login(userForLoginDto);
             if (userToLogin == null)
@@ -34,7 +34,7 @@ namespace WEBAPI.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult Register(UserForRegisterDto userForRegisterDto)
+        public async Task<ActionResult>Register(UserForRegisterDto userForRegisterDto)
         {
             var userExists = _usrservice.UserExists(userForRegisterDto.email);
             if (userExists == null)

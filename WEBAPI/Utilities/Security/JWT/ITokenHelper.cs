@@ -4,7 +4,7 @@ namespace WEBAPI.Utilities.Security.JWT
 {
     public interface ITokenHelper
     {    //json web token create with user info
-        AccessToken CreateToken(Users user, List<OperationClaim> operationclaims);
+       public AccessToken CreateToken(Users user, List<OperationClaim> operationclaims);
 
     }
 }
