@@ -67,7 +67,15 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-      
+        [HttpGet("IsAdminOrUser")]
+        public async Task<ActionResult<bool>> GetResult(string email)
+        {
+            var result =  _usrservice.IsAdmin(email);
+            
+
+            return Ok(result);
+        }
+
         [HttpGet("Logout")]
         public async Task<ActionResult<List<Users>>> Logout(int id)
         {

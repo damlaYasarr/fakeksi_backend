@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WEBAPI.Constants;
+using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Utilities.Security.Hashing;
@@ -11,14 +12,15 @@ namespace WEBAPI.Services
     {
         private readonly IUserService _userService;
         private readonly ITokenHelper _tokenHelper;
-
-       public AuthService(IUserService userService, ITokenHelper tokenHelper)
+       
+        public AuthService(IUserService userService, ITokenHelper tokenHelper)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+           
         }
 
-   
+        
 
         public Users Login(UserForLoginDto userForLoginDto)
         {
@@ -26,6 +28,7 @@ namespace WEBAPI.Services
 
             return userToCheck;
             /*
+              //to be fixed
             if (userToCheck == null)
             {
                 return null;
@@ -49,10 +52,12 @@ namespace WEBAPI.Services
                 email = userForRegisterDto.email,
                 name = userForRegisterDto.name,
                 register_date = s,
+                type = "user",
                 passwordhash = passwordHash,
                 passwordsalt = passwordSalt,
                 isActive = true
             };
+          
             _userService.Add(user);
             return user;
             // throw new NotImplementedException();
@@ -73,7 +78,7 @@ namespace WEBAPI.Services
 
 
         public Task<AccessToken> CreateAccessToken(Users user)
-        {
+        {   
             var claims = _userService.GetOperationClaims(user);
             var accessToken = _tokenHelper.CreateToken(user, claims);
             return Task.FromResult(accessToken);

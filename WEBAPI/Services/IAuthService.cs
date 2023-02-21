@@ -7,6 +7,7 @@ namespace WEBAPI.Services
     public interface IAuthService
     {
         Users Register(UserForRegisterDto userForRegisterDto, string password);
+
         Users Login(UserForLoginDto userForLoginDto);
         Task UserExists(string email);
         Task<AccessToken> CreateAccessToken(Users user);

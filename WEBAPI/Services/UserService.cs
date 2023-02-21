@@ -224,5 +224,21 @@ namespace WEBAPI.Services
 
             return _context.Users.SingleOrDefault(e => e.email == email);
         }
+
+        public bool IsAdmin(string email)
+        {
+            var result = GetByMail(email);
+            if (result == null) return false;
+            if (result.type=="user")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+           
+           
+        }
     }
 }

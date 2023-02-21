@@ -21,7 +21,9 @@ namespace WEBAPI.Services
 
         Task SendMessage(string user, string message);
         Task ReceiveMessage(string user, string message);
-
+       
+        
+        bool IsAdmin(string email);
 
 
 
