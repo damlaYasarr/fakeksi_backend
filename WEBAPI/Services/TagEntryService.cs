@@ -143,6 +143,7 @@ namespace WEBAPI.Services
                     
                 }
             }
+            
             //GETİRİLEN LİSTE RANDOM YAPILACAK 
             return Task.FromResult(listtag);
 
@@ -259,5 +260,8 @@ namespace WEBAPI.Services
 
             return Task.FromResult( result1.ToList());
         }
+
+
+       
     }
 }

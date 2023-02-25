@@ -67,7 +67,7 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-        [HttpGet("IsAdminOrUser")]
+        [HttpPost("IsAdminOrUser")]
         public async Task<ActionResult<bool>> GetResult(string email)
         {
             var result =  _usrservice.IsAdmin(email);

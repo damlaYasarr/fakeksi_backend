@@ -85,13 +85,7 @@ namespace WEBAPI.Services
             return result;
         }
 
-        /*  public async Task<List<Users>> AddUser(Users hero)
-          {    
-              hero.isActive = false;
-             _context.Users.Add(hero);
-               await _context.SaveChangesAsync();
-              return await _context.Users.ToListAsync();
-          }*/
+  
 
         public Task<List<Users>?> DeleteUser(int id)
         {

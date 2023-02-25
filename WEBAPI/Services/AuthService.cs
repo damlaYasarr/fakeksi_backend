@@ -24,7 +24,7 @@ namespace WEBAPI.Services
 
         public Users Login(UserForLoginDto userForLoginDto)
         {
-            var userToCheck = _userService.GetByMail(userForLoginDto.Email);
+            var userToCheck = _userService.GetByMail(userForLoginDto.email);
 
             return userToCheck;
             /*

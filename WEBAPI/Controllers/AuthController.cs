@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
 
 namespace WEBAPI.Controllers
 {
+    
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
@@ -15,8 +17,9 @@ namespace WEBAPI.Controllers
 
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult>Login(UserForLoginDto userForLoginDto)
+        [Route("login")]
+        [HttpPost]
+        public async Task<ActionResult>Login([FromBody]UserForLoginDto userForLoginDto)
         {
             var userToLogin = _usrservice.Login(userForLoginDto);
             if (userToLogin == null)
