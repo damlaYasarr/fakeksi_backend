@@ -23,6 +23,8 @@ namespace WEBAPI.Services
         Task ReceiveMessage(string user, string message);
        
         Task<int> getUserIdByEmail(string email);
+
+        Task<int> getUserIdByName(string name);
         bool IsAdmin(string email);
 
 
