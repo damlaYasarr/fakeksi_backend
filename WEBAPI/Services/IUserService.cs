@@ -18,7 +18,7 @@ namespace WEBAPI.Services
         Task<List<Users>?> DeleteUser(int id);
         Task<List<string>> GetAllFollower(int id);
         Task<List<string>> GetAllFollowed(int id);
-
+        Task<List<UserForProfileInfo>> GetUserProfileInfo(int id);
         Task SendMessage(string user, string message);
         Task ReceiveMessage(string user, string message);
        
