@@ -234,5 +234,19 @@ namespace WEBAPI.Services
            
            
         }
+
+        public Task<int> getUserIdByEmail(string email)
+        {
+            var result= from x in _context.Users
+                        where x.email == email
+                        select x;
+            if (result == null) { return null; }
+            int k = 0;
+            foreach(var x in result)
+            {
+                k = x.user_id;
+            }
+            return Task.FromResult(k);
+        }
     }
 }

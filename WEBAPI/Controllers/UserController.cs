@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
@@ -33,6 +34,12 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
+        [HttpGet("getuserIdByEmail")]
+        public async Task<ActionResult<int>> GetUserIdByEmail(string email)
+        {
+            var result = await _usrservice.getUserIdByEmail(email);
+            return Ok(result);
+        }
         [HttpPost("addFollower")]
         public async Task<ActionResult<Users>> AddFollower(int id, int otherid)
         {
@@ -59,6 +66,8 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
+
+
         [HttpGet("getAllFolloweD")]
         public async Task<ActionResult<List<string>>> GetAllFollowed(int id)
         {
@@ -67,7 +76,8 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-        [HttpPost("IsAdminOrUser")]
+        [Route("isAdminorUser")]
+        [HttpPost]
         public async Task<ActionResult<bool>> GetResult(string email)
         {
             var result =  _usrservice.IsAdmin(email);
