@@ -249,9 +249,40 @@ namespace WEBAPI.Services
             return Task.FromResult(k);
         }
 
-        public Task<List<UserForProfileInfo>> GetUserProfileInfo(int id)
+        public Task<UserForProfileInfo> GetUserProfileInfo(int id)
         {
-            throw new NotImplementedException();
+            var result = from user in _context.Users
+                               where user.user_id == id
+                               select user;
+            string name="";
+            foreach(var t in result) { name = t.name; }
+
+            //Kişinin toplam takipçi sayısı follower tablosundan alınır
+            int followersCount = (from x in _context.Followers
+                                 where x.follower_id == id
+                                 select x).Count();
+            if(followersCount ==null) { followersCount = 0; }
+
+            //Kişinin toplam takip edilen sayısı follower tablosundan alınır
+            int followed = (from x in _context.Followers
+                                  where x.followed_id == id
+                                  select x).Count();
+            if (followed == null) { followed = 0; }
+            //Kişinin toplam entry sayısı entry tablosundan alınır
+            int entriesCount = (from e in _context.Entry
+                               where e.user_id == id
+                                select e).Count();
+            if (entriesCount == null) { entriesCount = 0; }
+            UserForProfileInfo info = new UserForProfileInfo()
+            {
+               followednumber = followed,
+               username=name,
+               followernumber=followersCount,
+               totalentrynumber=entriesCount,
+            };
+
+
+            return Task.FromResult(info);
         }
 
         public Task<int> getUserIdByName(string name)

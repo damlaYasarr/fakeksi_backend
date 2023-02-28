@@ -92,14 +92,14 @@ namespace WEBAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Logout")]
-        public async Task<ActionResult<List<Users>>> Logout(int id)
+      
+        [HttpGet("UserProfileDetail")]
+        public async Task<ActionResult<List<Users>>> GetUserProfileDetail(int id)
         {
-            var result = await _usrservice.Logout(id);
+            var result = await _usrservice.GetUserProfileInfo(id);
             return Ok(result);
         }
 
-   
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Users>>> UpdateHero(int id, Users request)
         {
