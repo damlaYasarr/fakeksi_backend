@@ -248,5 +248,24 @@ namespace WEBAPI.Services
             }
             return Task.FromResult(k);
         }
+
+        public Task<List<UserForProfileInfo>> GetUserProfileInfo(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> getUserIdByName(string name)
+        {
+            var result = from x in _context.Users
+                         where x.name == name
+                         select x;
+            if (result == null) { return null; }
+            int k = 0;
+            foreach (var x in result)
+            {
+                k = x.user_id;
+            }
+            return Task.FromResult(k);
+        }
     }
 }

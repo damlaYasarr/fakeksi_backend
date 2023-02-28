@@ -11,7 +11,7 @@ namespace WEBAPI.Services
         Task<string> GetTagContentwithId(int id);
         Task<List<string>> GetTagAllTag();
         Task<List<string>> GetTagwithEntries(int tag_id);
-        Task<List<GetContents>> GetAllTagwithEntries(int userid);
+      
         Task<List<string>> ListTagsByDate();
         Task<List<Tag>> ListTagsByContent();
         Task<List<GetContents>> ListTagsandOneEntryByLikeCount();
@@ -21,6 +21,9 @@ namespace WEBAPI.Services
         Task<List<string>> TopTrendwithMaxEntryNumber();
         Task<List<GetTagandEntryCount>> TopEntrylikescount();
         Task<string> DeleteLike(int user_id, int entry_id);
-       
+        Task<int> GetTagIdByTagName(string name);
+        Task<List<GetContents>> GetAllTagwithEntries(int userid);
+
+
     }
 }

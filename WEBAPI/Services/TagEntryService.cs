@@ -261,7 +261,15 @@ namespace WEBAPI.Services
             return Task.FromResult( result1.ToList());
         }
 
+        public Task<int> GetTagIdByTagName(string name)
+        {
+            var result = from x in _context.Tags
+                         where x.definition == name
+                         select x;
+            int k = 0;
+            foreach(var t in result) { k = t.id; }
+            return Task.FromResult(k);
 
-       
+        }
     }
 }

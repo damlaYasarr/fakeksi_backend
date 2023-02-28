@@ -40,6 +40,12 @@ namespace WEBAPI.Controllers
             var result = await _usrservice.getUserIdByEmail(email);
             return Ok(result);
         }
+        [HttpGet("getuserIdByname")]
+        public async Task<ActionResult<int>> GetUserIdByName(string name)
+        {
+            var result = await _usrservice.getUserIdByName(name);
+            return Ok(result);
+        }
         [HttpPost("addFollower")]
         public async Task<ActionResult<Users>> AddFollower(int id, int otherid)
         {

@@ -101,6 +101,12 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.ListTagsandOneEntryByLikeCount();
             return Ok(result);
         }
-        
+        [HttpGet("tagidbyname")]
+        public async Task<ActionResult<GetTagandEntryCount>> GetTagIdByTagname(string name)
+        {
+
+            var result = await _tagentryservice.GetTagIdByTagName(name);
+            return Ok(result);
+        }
     }
 }
