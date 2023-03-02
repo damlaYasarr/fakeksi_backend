@@ -46,6 +46,7 @@ namespace WEBAPI.Services
 
        public async Task<Entry> Addentry(int user_id, int tag_id, string def)
         {
+             
             //create entry kod
             DateTime dt = DateTime.Now; // Or whatever
             string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
@@ -113,8 +114,27 @@ namespace WEBAPI.Services
 
             return Task.FromResult(result.ToList());
         }
+        public Task<List<GetContents>> GetAllEntries(int tagid)
+        {
+            var result = from r in _context.Entry
+                         join x in _context.Users on r.user_id equals x.user_id
+                         join u in _context.Tags on r.tag_id equals u.id into ux
+                         from u in ux.DefaultIfEmpty()
+                         where r.tag_id==tagid
+                         select new GetContents
+                         {
+                             name = x.name,
+                             enrydate = r.date_entry,
+                            
+                             entries = r.definition,
+                             kod = r.kod
+                         };
 
-       private string createCode()
+
+
+            return Task.FromResult(result.ToList());
+        }
+        private string createCode()
         {
             Random r = new Random();
             var x = r.Next(0, 1000000);

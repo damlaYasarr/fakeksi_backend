@@ -59,6 +59,14 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.ListTagsByDate();
             return Ok(result);
         }
+        [Route("entries{id}")]
+        [HttpGet]
+        public async Task<ActionResult<List<GetContents>>> GetEntries(int id)
+        {
+            
+            var result =await _tagentryservice.GetAllEntries(id);
+            return Ok(result);
+        }
         [HttpPost("addLike")]
         public async Task<ActionResult<int>> AddLike(int userid, int entryid)
         {
