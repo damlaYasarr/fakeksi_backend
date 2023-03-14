@@ -21,7 +21,7 @@ namespace WEBAPI.Data
         public DbSet<Users> Users { get; set; }
         public DbSet<FileUpload> Files { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<Entry> Entry { get; set; }
+        public DbSet<Entry> Entries { get; set; }
         public DbSet<Followers> Followers { get; set; }
         public DbSet<Likes> Likes { get; set; }
         public DbSet<Msg> Msgs { get; set; }

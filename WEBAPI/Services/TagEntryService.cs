@@ -8,6 +8,7 @@ using System.Linq;
 using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace WEBAPI.Services
 {
@@ -60,7 +61,7 @@ namespace WEBAPI.Services
                 date_entry = s,
                 kod = createCode(),
             };
-            _context.Entry.Add(entry);
+            _context.Entries.Add(entry);
             _context.SaveChanges();
             return entry;
         }
@@ -86,7 +87,7 @@ namespace WEBAPI.Services
         public Task<List<string>> GetTagwithEntries(int tag_id)
         {
 
-            var xx = from x in _context.Entry
+            var xx = from x in _context.Entries
                      where x.tag_id == tag_id
                      select x.definition;
 
@@ -96,7 +97,7 @@ namespace WEBAPI.Services
 
         public Task<List<GetContents>> GetAllTagwithEntries(int userid)
         {
-            var result = from r in _context.Entry
+            var result = from r in _context.Entries
                          join x in _context.Users on userid equals x.user_id
                          join u in _context.Tags on r.tag_id equals u.id into ux
                          from u in ux.DefaultIfEmpty()
@@ -116,7 +117,7 @@ namespace WEBAPI.Services
         }
         public Task<List<GetContents>> GetAllEntries(int tagid)
         {
-            var result = from r in _context.Entry
+            var result = from r in _context.Entries
                          join x in _context.Users on r.user_id equals x.user_id
                          join u in _context.Tags on r.tag_id equals u.id into ux
                          from u in ux.DefaultIfEmpty()
@@ -180,7 +181,7 @@ namespace WEBAPI.Services
 
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
         {//pretty hard
-            var query = from entry in _context.Entry
+            var query = from entry in _context.Entries
                         join popularEntry in (from like in _context.Likes
                                               group like by like.entry_id into g
                                               orderby g.Count() descending
@@ -273,7 +274,7 @@ namespace WEBAPI.Services
         {
             
             var result1 = from t in _context.Tags
-                          join e in _context.Entry on t.id equals e.tag_id
+                          join e in _context.Entries on t.id equals e.tag_id
                           group t.definition by t.definition into g
                           select new GetTagandEntryCount { Tag = g.Key, entryCount = g.Count() };
 
@@ -291,5 +292,40 @@ namespace WEBAPI.Services
             return Task.FromResult(k);
 
         }
+
+        public async Task<List<string>> SearchFindTagandUserName(string input)
+        {
+            //var user = await _context.Users.FirstOrDefaultAsync(u => u.name.Contains(input));
+            // var result2 = await _context.Tags.FirstOrDefaultAsync(e => e.definition.Contains(input));
+            var result = from x in _context.Tags
+                         select x.definition;
+            var user = from x in _context.Users
+                         select x.name;
+            List<string> sentences = new();
+
+
+            foreach (var item in result)
+            {
+                string xx = item.ToString();
+                if (xx.Contains(input))
+                {
+                    sentences.Add(xx);
+                }
+                
+            }
+            foreach (var item in user)
+            {
+                string xx = item.ToString();
+                if (xx.Contains(input))
+                {
+                    sentences.Add("@"+xx);
+                }
+
+            }
+
+            return sentences;
+        }
+    
+
     }
 }

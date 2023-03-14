@@ -168,7 +168,7 @@ namespace WEBAPI.Services
             return Task.FromResult(usr);
 
         }
-        public async Task SendMessage(string user, string message)
+      /*  public async Task SendMessage(string user, string message)
         {
             using (var client = new HttpClient())
             {
@@ -185,7 +185,7 @@ namespace WEBAPI.Services
                 }
             }
         }
-
+      */
 
        
 
@@ -269,7 +269,7 @@ namespace WEBAPI.Services
                                   select x).Count();
             if (followed == null) { followed = 0; }
             //Kişinin toplam entry sayısı entry tablosundan alınır
-            int entriesCount = (from e in _context.Entry
+            int entriesCount = (from e in _context.Entries
                                where e.user_id == id
                                 select e).Count();
             if (entriesCount == null) { entriesCount = 0; }

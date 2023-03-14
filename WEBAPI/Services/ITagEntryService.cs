@@ -23,7 +23,7 @@ namespace WEBAPI.Services
         Task<string> DeleteLike(int user_id, int entry_id);
         Task<int> GetTagIdByTagName(string name);
         Task<List<GetContents>> GetAllTagwithEntries(int userid);
-
+        Task<List<string>> SearchFindTagandUserName(string input);
 
     }
 }

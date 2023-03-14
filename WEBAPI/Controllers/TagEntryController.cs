@@ -61,7 +61,7 @@ namespace WEBAPI.Controllers
         }
         [Route("entries{id}")]
         [HttpGet]
-        public async Task<ActionResult<List<GetContents>>> GetEntries(int id)
+        public async Task<ActionResult<List<GetContents>>> GetEntries([FromBody]int id)
         {
             
             var result =await _tagentryservice.GetAllEntries(id);
@@ -114,6 +114,13 @@ namespace WEBAPI.Controllers
         {
 
             var result = await _tagentryservice.GetTagIdByTagName(name);
+            return Ok(result);
+        }
+        [Route("search")]
+        [HttpGet]
+        public async Task<ActionResult<List<string>>> SearchFindTagandUserNames(string nn)
+        {
+            var result = await _tagentryservice.SearchFindTagandUserName(nn);
             return Ok(result);
         }
     }
