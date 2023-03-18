@@ -8,6 +8,7 @@ using System.Linq;
 using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
+using WEBAPI.Models.DTO_s.UserDTos;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace WEBAPI.Services
@@ -25,7 +26,7 @@ namespace WEBAPI.Services
         //kişinin bütün yazdığı tagleri listele
         //kişinin bütün entryleri listele
 
-        public async Task<Tag> ShareTag(Tag tt)
+        public async Task<Tag> ShareTag(int user_id, string def)
         {
             
             DateTime dt = DateTime.Now;
@@ -33,8 +34,8 @@ namespace WEBAPI.Services
             //yazılan tag'in id'sini almak gerekir mi?
             Tag shareentry = new Tag()
             {
-                user_id = tt.user_id,
-                definition = tt.definition,
+                user_id = user_id,
+                definition =def,
                 datetime = s
             };
 
@@ -45,27 +46,32 @@ namespace WEBAPI.Services
 
         }
 
-       public async Task<Entry> Addentry(int user_id, int tag_id, string def)
+      
+        public async Task<Entry> AddEntry(ShareEntry content)
         {
-             
+           
+
             //create entry kod
             DateTime dt = DateTime.Now; // Or whatever
             string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
 
-            var result = _context.Users.SingleOrDefault(b => b.user_id == user_id);
-            Entry entry = new Entry()
-            {
-                user_id = user_id,
-                tag_id = tag_id,
-                definition = def,
-                date_entry = s,
-                kod = createCode(),
-            };
-            _context.Entries.Add(entry);
-            _context.SaveChanges();
-            return entry;
-        }
+            Entry addlike = new Entry()
+                {
+                    user_id = content.user_id,
+                    tag_id = content.tag_id,
+                    definition = content.definition,
+                    date_entry=s,
+                    kod=createCode()
+                };
+                _context.Entries.Add(addlike);
+                await _context.SaveChangesAsync();
+                return await Task.FromResult(addlike);
+            
+            
+            
+            
 
+        }
         public async Task<string?> GetTagContentwithId(int id)
         {
             var result= _context.Tags.SingleOrDefault(t => t.id == id);

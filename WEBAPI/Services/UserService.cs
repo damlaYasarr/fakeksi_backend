@@ -189,11 +189,7 @@ namespace WEBAPI.Services
 
        
 
-        public Task ReceiveMessage(string user, string message)
-        {
-            throw new NotImplementedException();
-        }
-
+     
 
         public List<OperationClaim> GetOperationClaims(Users user)
         {
@@ -297,6 +293,16 @@ namespace WEBAPI.Services
                 k = x.user_id;
             }
             return Task.FromResult(k);
+        }
+        public Task ReceiveMessage(string user, string message)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Task SendMessage(string user, string message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

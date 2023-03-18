@@ -49,9 +49,7 @@ namespace WEBAPI.Controllers
         [HttpPost("addFollower")]
         public async Task<ActionResult<Users>> AddFollower(int id, int otherid)
         {
-            await _usrservice.Addfollower(id,otherid);
-           
-
+            await _usrservice.Addfollower(id, otherid);
             return Ok("işlem başarılı");
         }
 
@@ -118,5 +116,6 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
+     
     }
 }

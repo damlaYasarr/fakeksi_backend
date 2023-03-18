@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
+using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
 
 namespace WEBAPI.Controllers
@@ -16,18 +17,22 @@ namespace WEBAPI.Controllers
             _tagentryservice = tagentryservice;
         }
         [HttpPost("tagekle")]
-        public async Task<ActionResult<Tag>> Addtag(Tag tt)
+        public async Task<ActionResult<Tag>> Addtag(int user_id, string def)
         {
-            await _tagentryservice.ShareTag(tt);
-            return Ok("tag eklendi"); 
+          var result=  await _tagentryservice.ShareTag(user_id, def);
+            return Ok(result); 
         }
+    
         [HttpPost("entryekle")]
-        public async Task<ActionResult<Entry>> AddEntry(int user_id, int tag_id,string def)
+        public async Task<ActionResult<Entry>> AddEntries(ShareEntry content)
         {
-            await _tagentryservice.Addentry(user_id,tag_id, def);
-            return Ok("tag eklendi");
+            var result =await _tagentryservice.AddEntry(content);
+            
+            return Ok(result);
+           
         }
-        [HttpGet("gettag")]
+        [Route("gettag{id}")]
+        [HttpGet]
         public async Task<ActionResult<string>> GetTag(int id)
         {
            var result= await _tagentryservice.GetTagContentwithId(id);
@@ -61,7 +66,7 @@ namespace WEBAPI.Controllers
         }
         [Route("entries{id}")]
         [HttpGet]
-        public async Task<ActionResult<List<GetContents>>> GetEntries([FromBody]int id)
+        public async Task<ActionResult<List<GetContents>>> GetEntries(int id)
         {
             
             var result =await _tagentryservice.GetAllEntries(id);

@@ -72,5 +72,5 @@ app.UseAuthentication();//first
 app.UseAuthorization();
 app.UseRouting();
 app.MapControllers();
-
+app.UseDeveloperExceptionPage();
 app.Run();
