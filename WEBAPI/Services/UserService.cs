@@ -186,9 +186,6 @@ namespace WEBAPI.Services
             }
         }
       */
-
-       
-
      
 
         public List<OperationClaim> GetOperationClaims(Users user)
@@ -294,15 +291,58 @@ namespace WEBAPI.Services
             }
             return Task.FromResult(k);
         }
-        public Task ReceiveMessage(string user, string message)
+        public async Task<List<string>> ReceiveMessage(int userid, int otherid)
         {
-            throw new NotImplementedException();
+            var result = from x in _context.Msg
+                         where x.msg_receiver_id == userid && x.msg_sender_id == otherid
+                         select x;
+            List<string> msg= new List<string>();
+
+            foreach (var x in result)
+            {
+                if (x.isOpened == false)
+                {
+                    
+                    msg.Add(x.msg_detail);
+                    x.isOpened = true;
+                    _context.Msg.Update(x);
+                }
+               
+            }
+
+            await _context.SaveChangesAsync();
+
+            return msg;
+           
         }
 
 
-        public Task SendMessage(string user, string message)
+        public async Task<Msg> SendMessage(int userid, int otherid, string msg)
         {
-            throw new NotImplementedException();
+            if (userid == otherid)
+            {
+                return null;
+            }
+            if (msg == "")
+            {
+                return null;
+            }
+            DateTime dt = DateTime.Now; // Or whatever
+            string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
+            var newmsg = new Msg() {
+                msg_date = s,
+                msg_detail = msg,
+                isOpened = false,
+                msg_receiver_id=otherid,
+                msg_sender_id=userid
+            };
+            _context.Msg.Add(newmsg);
+            await _context.SaveChangesAsync();
+
+            return newmsg;
+
         }
+
+        
     }
 }

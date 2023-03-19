@@ -1,9 +1,11 @@
 
 using Autofac.Core;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IdentityModel.Tokens.Jwt;
 using WEBAPI.Data;
 using WEBAPI.Services;
+using Microsoft.AspNet.SignalR;
 using WEBAPI.Utilities.Security.Encryption;
 using WEBAPI.Utilities.Security.JWT;
 
@@ -55,7 +57,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 var app = builder.Build();
-
+var hubConfiguration = new HubConfiguration();
+hubConfiguration.EnableDetailedErrors = true;
+hubConfiguration.EnableJavaScriptProxies = false;
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -67,10 +71,13 @@ app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyOrig
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     );
+
 app.UseHttpsRedirection();
 app.UseAuthentication();//first
 app.UseAuthorization();
 app.UseRouting();
 app.MapControllers();
+
 app.UseDeveloperExceptionPage();
+//app.MapSignalR("/signalr", new HubConfiguration());
 app.Run();

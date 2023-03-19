@@ -116,6 +116,23 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-     
+        [HttpGet("getmsg")]
+        public async Task<ActionResult<List<string>>> GetMsg(int userid, int otherid)
+        {
+            var result = await _usrservice.ReceiveMessage(userid,otherid);
+            if (result is null)
+                return NotFound("Hero not found.");
+
+            return Ok(result);
+        }
+        [HttpPost("sendmsg")]
+        public async Task<ActionResult<Msg>> SendMsg(int userid, int otherid, string msg)
+        {
+            var result = await _usrservice.SendMessage(userid, otherid, msg);
+            if (result is null)
+                return NotFound("Hero not found.");
+
+            return Ok(result);
+        }
     }
 }
