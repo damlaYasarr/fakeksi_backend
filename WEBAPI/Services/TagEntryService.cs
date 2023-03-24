@@ -331,7 +331,23 @@ namespace WEBAPI.Services
 
             return sentences;
         }
-    
 
+        public async Task<string> RemoveLike(int user_id, int entry_id)
+        {
+            var resul = from x in _context.Likes
+                        where x.user_id == user_id && x.entry_id == entry_id
+                        select x;
+            var like = await resul.FirstOrDefaultAsync();
+            if (like != null)
+            {
+                _context.Likes.Remove(like);
+                await _context.SaveChangesAsync();
+                return "removed";
+            }
+            else
+            {
+                return "başarılı olamıyor";
+            }
+        }
     }
 }

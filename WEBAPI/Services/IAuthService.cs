@@ -11,5 +11,6 @@ namespace WEBAPI.Services
         Users Login(UserForLoginDto userForLoginDto);
         Task UserExists(string email);
         Task<AccessToken> CreateAccessToken(Users user);
+        Users ForgotPassword(string email, string password);
     }
 }

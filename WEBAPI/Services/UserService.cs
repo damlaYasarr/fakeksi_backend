@@ -119,9 +119,13 @@ namespace WEBAPI.Services
         }
 
 
-        public Task<List<Users>?> UpdateUsrs(int id, Users request)
+        public Task<Users> UpdateUsrs(int id, Users request)
         {
-            throw new NotImplementedException();
+            var result = _context.Users.SingleOrDefault(e => e.user_id == id); 
+            if(result != null) {
+               _context.Users.Update(request);
+            }
+            return null;
         }
 
        
@@ -343,6 +347,9 @@ namespace WEBAPI.Services
 
         }
 
-        
+        public List<Msg> getAllMssgies(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

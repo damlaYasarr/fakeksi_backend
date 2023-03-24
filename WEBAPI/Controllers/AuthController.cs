@@ -54,5 +54,23 @@ namespace WEBAPI.Controllers
 
             return BadRequest(null);
         }
+        [HttpPost("forgotpassword")]
+        public async Task<ActionResult> Register(string email, string password)
+        {
+            var userExists = _usrservice.UserExists(email);
+            if (userExists == null)
+            {
+                return BadRequest("null");
+            }
+
+            
+            var result = _usrservice.ForgotPassword(email,password);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(null);
+        }
     }
 }

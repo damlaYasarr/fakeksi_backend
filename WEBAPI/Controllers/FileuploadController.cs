@@ -51,8 +51,28 @@ namespace WEBAPI.Controllers
             }
 
         }
-        
-    
-     
+        [HttpPost("imagedelete")]
+        public string DeleteImage(string imageName)
+        {
+            try
+            {
+                string path = _webHostEnvironment.WebRootPath + "\\uploads\\" + imageName;
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                    return "Image deleted successfully.";
+                }
+                else
+                {
+                    return "Image not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
     }
 }

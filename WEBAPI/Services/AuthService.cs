@@ -84,5 +84,21 @@ namespace WEBAPI.Services
             return Task.FromResult(accessToken);
         }
 
+        public Users ForgotPassword(string email, string password)
+        {
+            var result = _userService.GetByMail(email);
+            byte[] passwordHash, passwordSalt;
+            Hashinghelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            if (result != null)
+            {
+                result.passwordhash=passwordHash;
+                result.passwordsalt=passwordSalt;
+                _userService.UpdateUsrs(result.user_id,result);
+            }
+            return result;
+            
+        }
+
+      
     }
     }

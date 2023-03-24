@@ -14,7 +14,8 @@ namespace WEBAPI.Services
         Task<Users?> Logout(int id);
         Task<Users?> Addfollower(int benim, int otheruser);
         Task<Users?> DeleteFollower(int benim, int otheruser);
-        Task<List<Users>?> UpdateUsrs(int id, Users request);
+
+        Task<Users> UpdateUsrs(int id, Users request);
         Task<List<Users>?> DeleteUser(int id);
         Task<List<string>> GetAllFollower(int id);
         Task<List<string>> GetAllFollowed(int id);
@@ -28,6 +29,7 @@ namespace WEBAPI.Services
         Task<int> getUserIdByName(string name);
         bool IsAdmin(string email);
 
+        List<Msg> getAllMssgies(int id);
 
 
         List<OperationClaim> GetOperationClaims(Users user);

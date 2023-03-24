@@ -16,7 +16,10 @@ namespace WEBAPI.Services
         Task<List<string>> ListTagsByDate();
         Task<List<Tag>> ListTagsByContent();
         Task<List<GetContents>> ListTagsandOneEntryByLikeCount();
+
         Task<string> AddLike(int user_id, int entry_id);
+        Task<string> RemoveLike(int user_id, int entry_id);
+
         Task<int> GetLikeCountLike( int entry_id);
         Task<List<string>> GetListLikesUserName(int entry_id);
         Task<List<string>> TopTrendwithMaxEntryNumber();
