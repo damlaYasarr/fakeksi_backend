@@ -349,5 +349,16 @@ namespace WEBAPI.Services
                 return "başarılı olamıyor";
             }
         }
+
+        public async Task<int> GetEntryIdByName(string entryDetail)
+        {
+            var result = await (
+                from x in _context.Entries
+                where entryDetail == x.definition
+                select x.id
+            ).FirstOrDefaultAsync();
+
+            return result;
+        }
     }
 }

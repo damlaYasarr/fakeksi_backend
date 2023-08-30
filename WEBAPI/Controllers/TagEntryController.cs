@@ -121,6 +121,14 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.GetTagIdByTagName(name);
             return Ok(result);
         }
+        //GetEntryIdByName
+        [HttpGet("entryidbyname")]
+        public async Task<ActionResult<GetTagandEntryCount>> GetEntryIdByName(string name)
+        {
+
+            var result = await _tagentryservice.GetEntryIdByName(name);
+            return Ok(result);
+        }
         [Route("search")]
         [HttpGet]
         public async Task<ActionResult<List<string>>> SearchFindTagandUserNames(string nn)
