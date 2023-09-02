@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using GW2NET.Items;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Channels;
 using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
 using WEBAPI.Models.DTO_s.UserDTos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WEBAPI.Services
 {
@@ -230,24 +234,29 @@ namespace WEBAPI.Services
              
         }
         public async Task<string> DeleteLike(int user_id, int entry_id)
-        {//çalışmıyor kontrol et
-            var resul = from x in _context.Likes
-                        where x.user_id == user_id && x.entry_id == entry_id
-                        select x;
-            if (!resul.IsNullOrEmpty())
+        {
+            try
             {
-               
-                _context.Likes.Remove((Likes)resul);
-                await _context.SaveChangesAsync();
-                return "like silindi";
-            }
-            else
-            {
-                return "like yok";
-            }
+                var likeToDelete = _context.Likes.FirstOrDefault(x => x.user_id == user_id && x.entry_id == entry_id);
 
+                if (likeToDelete != null)
+                {
+                    _context.Likes.Remove(likeToDelete);
+                    await _context.SaveChangesAsync();
+                    return "Like removed successfully.";
+                }
+                else
+                {
+                    return "Like not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception appropriately (log, return an error message, etc.)
+                return "An error occurred while deleting the like.";
+            }
         }
-
+     
         public Task<int> GetLikeCountLike( int entry_id)
         {
             var result = from x in _context.Likes
