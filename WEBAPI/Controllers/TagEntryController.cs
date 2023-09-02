@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WEBAPI.Controllers
 {
@@ -72,13 +74,24 @@ namespace WEBAPI.Controllers
             var result =await _tagentryservice.GetAllEntries(id);
             return Ok(result);
         }
-        [HttpPost("addLike")]
-        public async Task<ActionResult<int>> AddLike(int userid, int entryid)
-        {
 
-            var result = await _tagentryservice.AddLike(userid, entryid);
-            return Ok(result);
+        [HttpPost("addLike")]
+        public async Task<IActionResult> AddLike(int userid, int entryid)
+        {
+            bool result = await _tagentryservice.AddLike(userid, entryid);
+
+            if (result)
+            {
+                return Ok(true); // You can return a boolean directly
+            }
+            else
+            {
+                return BadRequest(false); // You can return a boolean directly
+            }
         }
+       
+
+
         [HttpGet("getlikecount")]
         public async Task<ActionResult<string>> GetLikeCount( int entryid)
         {

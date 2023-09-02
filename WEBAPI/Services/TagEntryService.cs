@@ -211,7 +211,7 @@ namespace WEBAPI.Services
             var result = query.FirstOrDefault();
            return Task.FromResult(query.ToList());
         }
-        public async Task<string> AddLike(int user_id, int entry_id)
+        public async Task<bool> AddLike(int user_id, int entry_id)
         {
             var resul = from x in _context.Likes
                          where x.user_id == user_id && x.entry_id == entry_id
@@ -225,11 +225,11 @@ namespace WEBAPI.Services
                 };
                 _context.Likes.Add(addlike);
                 await _context.SaveChangesAsync();
-                return "eklendi";
+                return true;
             }
             else
             {
-                return "kişi var";
+                return false;
             }
              
         }
@@ -252,7 +252,7 @@ namespace WEBAPI.Services
             }
             catch (Exception ex)
             {
-                // Handle the exception appropriately (log, return an error message, etc.)
+        
                 return "An error occurred while deleting the like.";
             }
         }

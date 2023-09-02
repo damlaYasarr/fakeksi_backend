@@ -19,7 +19,7 @@ namespace WEBAPI.Services
 
         Task<int> GetEntryIdByName(string entryidetail);
 
-        Task<string> AddLike(int user_id, int entry_id);
+        Task<bool> AddLike(int user_id, int entry_id);
         Task<string> RemoveLike(int user_id, int entry_id);
 
         Task<int> GetLikeCountLike( int entry_id);
