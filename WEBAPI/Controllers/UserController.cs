@@ -147,5 +147,11 @@ namespace WEBAPI.Controllers
             var result=await _usrservice.GetMsgCount(userid,senderid);
             return Ok(result);
         }
+        [HttpGet("LastMsg")]
+        public async Task<ActionResult<string>> GetLastMsg(int userid, int senderid)
+        {
+            var result=await _usrservice.GetLastMessage(userid,senderid);
+            return Ok(result);
+        }
     }
 }

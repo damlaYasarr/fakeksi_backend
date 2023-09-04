@@ -369,5 +369,23 @@ namespace WEBAPI.Services
         .CountAsync();
                 return result;
         }
+
+        public async Task<string> GetLastMessage(int userid, int senderid)
+        {
+            //en son tarihe göre getir 
+            var latestMessage = await _context.Msg
+                          .Where(x => x.msg_receiver_id == userid && x.msg_sender_id == senderid)
+                           .OrderByDescending(x => x.msg_date) 
+                          .FirstOrDefaultAsync();
+
+            return latestMessage.ToString();
+       
+        }
+
+        public async Task DeleteAllMsg(int userid, int senderid)
+        {
+            //
+            throw new NotImplementedException();
+        }
     }
 }

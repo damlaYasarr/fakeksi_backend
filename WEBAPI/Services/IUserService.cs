@@ -25,6 +25,8 @@ namespace WEBAPI.Services
         Task<Msg> SendMessage(int userid, int otherid, string msg);
         Task<List<string>> ReceiveMessage(int userid, int otherid);
         Task<int> GetMsgCount(int userid,int senderid);
+        Task<string> GetLastMessage(int userid, int senderid);
+        Task DeleteAllMsg(int userid, int senderid);
 
         Task<int> getUserIdByEmail(string email);
 
