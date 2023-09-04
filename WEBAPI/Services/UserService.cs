@@ -351,5 +351,23 @@ namespace WEBAPI.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<string> GetUserNameById(int id)
+        {
+            var result = await (from x in _context.Users
+                                where x.user_id == id
+                                select x.name)
+                                .FirstOrDefaultAsync(); // LINQ sorgusunu çalıştır ve ilk sonucu al
+
+            return result;
+        }
+
+        public async Task<int> GetMsgCount(int userid, int senderid)
+        {
+            var result = await _context.Msg
+        .Where(x => x.msg_receiver_id == userid && x.msg_sender_id == senderid)
+        .CountAsync();
+                return result;
+        }
     }
 }

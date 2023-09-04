@@ -46,6 +46,12 @@ namespace WEBAPI.Controllers
             var result = await _usrservice.getUserIdByName(name);
             return Ok(result);
         }
+        [HttpGet("GetUserNameById")]
+        public async Task<ActionResult<int>> GetUserNameById(int id)
+        {
+            var result = await _usrservice.GetUserNameById( id);
+            return Ok(result);
+        }
         [HttpPost("addFollower")]
         public async Task<ActionResult<Users>> AddFollower(int id, int otherid)
         {
@@ -132,6 +138,13 @@ namespace WEBAPI.Controllers
             if (result is null)
                 return NotFound("Hero not found.");
 
+            return Ok(result);
+        }
+
+        [HttpGet("getmsgcount")]
+        public async Task<ActionResult<int>> GetMsgCount(int userid, int senderid)
+        {
+            var result=await _usrservice.GetMsgCount(userid,senderid);
             return Ok(result);
         }
     }

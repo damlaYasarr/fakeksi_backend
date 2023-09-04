@@ -14,15 +14,17 @@ namespace WEBAPI.Services
         Task<Users?> Logout(int id);
         Task<Users?> Addfollower(int benim, int otheruser);
         Task<Users?> DeleteFollower(int benim, int otheruser);
-
+        Task<string> GetUserNameById(int id);
         Task<Users> UpdateUsrs(int id, Users request);
         Task<List<Users>?> DeleteUser(int id);
         Task<List<string>> GetAllFollower(int id);
         Task<List<string>> GetAllFollowed(int id);
         Task<UserForProfileInfo> GetUserProfileInfo(int id);
+
+
         Task<Msg> SendMessage(int userid, int otherid, string msg);
         Task<List<string>> ReceiveMessage(int userid, int otherid);
-
+        Task<int> GetMsgCount(int userid,int senderid);
 
         Task<int> getUserIdByEmail(string email);
 
