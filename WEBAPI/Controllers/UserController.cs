@@ -122,10 +122,11 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-        [HttpGet("getmsg")]
-        public async Task<ActionResult<List<string>>> GetMsg(int userid, int otherid)
+       
+     [HttpGet("getmsg")]
+        public async Task<ActionResult<List<(Msg,string)>>> GetMsg(int userid)
         {
-            var result = await _usrservice.ReceiveMessage(userid,otherid);
+            var result = await _usrservice.ReceiveMessage(userid);
             if (result is null)
                 return NotFound("Hero not found.");
 
@@ -147,11 +148,11 @@ namespace WEBAPI.Controllers
             var result=await _usrservice.GetMsgCount(userid,senderid);
             return Ok(result);
         }
-        [HttpGet("LastMsg")]
-        public async Task<ActionResult<string>> GetLastMsg(int userid, int senderid)
-        {
-            var result=await _usrservice.GetLastMessage(userid,senderid);
-            return Ok(result);
-        }
+        //[HttpGet("LastMsg")]
+        //public async Task<ActionResult<string>> GetLastMsg(int userid, int senderid)
+        //{
+        //    var result=await _usrservice.GetLastMessage(userid,senderid);
+        //    return Ok(result);
+        //}
     }
 }

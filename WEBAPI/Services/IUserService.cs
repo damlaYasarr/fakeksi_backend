@@ -23,7 +23,7 @@ namespace WEBAPI.Services
 
 
         Task<Msg> SendMessage(int userid, int otherid, string msg);
-        Task<List<string>> ReceiveMessage(int userid, int otherid);
+        Task<List<Msg>> ReceiveMessage(int userid); //bana gelen mesjlar listelenmeli
         Task<int> GetMsgCount(int userid,int senderid);
         Task<string> GetLastMessage(int userid, int senderid);
         Task DeleteAllMsg(int userid, int senderid);

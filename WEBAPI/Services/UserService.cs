@@ -172,25 +172,7 @@ namespace WEBAPI.Services
             return Task.FromResult(usr);
 
         }
-      /*  public async Task SendMessage(string user, string message)
-        {
-            using (var client = new HttpClient())
-            {
-                var content = new StringContent(JsonConvert.SerializeObject(new { User = user, Message = message }), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("http://your-api-url/chat", content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    // Message was successfully sent
-                }
-                else
-                {
-                    // Handle error
-                }
-            }
-        }
-      */
-     
 
         public List<OperationClaim> GetOperationClaims(Users user)
         {
@@ -295,31 +277,20 @@ namespace WEBAPI.Services
             }
             return Task.FromResult(k);
         }
-        public async Task<List<string>> ReceiveMessage(int userid, int otherid)
+        public async Task<List<(Msg, string)>> ReceiveMessage(int userId)
         {
-            var result = from x in _context.Msg
-                         where x.msg_receiver_id == userid && x.msg_sender_id == otherid
-                         select x;
-            List<string> msg= new List<string>();
+            var latestMessagesWithSenderName = from msg in _context.Msg
+                                               where msg.msg_receiver_id == userId
+                                               join user in _context.Users on msg.msg_sender_id equals user.user_id
+                                               group new { msg, user.name } by new { msg.msg_sender_id, user.name } into senderGroup
+                                               select senderGroup.OrderByDescending(m => m.msg.msg_date).FirstOrDefault();
 
-            foreach (var x in result)
-            {
-                if (x.isOpened == false)
-                {
-                    
-                    msg.Add(x.msg_detail);
-                    x.isOpened = true;
-                    _context.Msg.Update(x);
-                }
-               
-            }
+            var result = await latestMessagesWithSenderName.ToListAsync();
 
-            await _context.SaveChangesAsync();
+            var messagesWithSenderNames = result.Select(item => (item.msg, item.name)).ToList();
 
-            return msg;
-           
+            return messagesWithSenderNames;
         }
-
 
         public async Task<Msg> SendMessage(int userid, int otherid, string msg)
         {
@@ -359,7 +330,7 @@ namespace WEBAPI.Services
                                 select x.name)
                                 .FirstOrDefaultAsync(); // LINQ sorgusunu çalıştır ve ilk sonucu al
 
-            return result;
+            return result.ToString();
         }
 
         public async Task<int> GetMsgCount(int userid, int senderid)
@@ -377,9 +348,18 @@ namespace WEBAPI.Services
                           .Where(x => x.msg_receiver_id == userid && x.msg_sender_id == senderid)
                            .OrderByDescending(x => x.msg_date) 
                           .FirstOrDefaultAsync();
+            string messageContent = latestMessage.msg_detail;
+            if (latestMessage != null)
+            {
+                return messageContent;
+            }
+            else
+            {
+             
+                 throw new Exception("Mesaj bulunamadı");
+              
+            }
 
-            return latestMessage.ToString();
-       
         }
 
         public async Task DeleteAllMsg(int userid, int senderid)
