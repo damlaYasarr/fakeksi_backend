@@ -13,6 +13,8 @@ using WEBAPI.Utilities.Security.JWT;
 using WEBAPI.Constants;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Utilities.Security.Hashing;
+using WEBAPI.Models.DTO_s;
+using System.Formats.Tar;
 
 namespace WEBAPI.Services
 {
@@ -277,20 +279,7 @@ namespace WEBAPI.Services
             }
             return Task.FromResult(k);
         }
-        public async Task<List<(Msg, string)>> ReceiveMessage(int userId)
-        {
-            var latestMessagesWithSenderName = from msg in _context.Msg
-                                               where msg.msg_receiver_id == userId
-                                               join user in _context.Users on msg.msg_sender_id equals user.user_id
-                                               group new { msg, user.name } by new { msg.msg_sender_id, user.name } into senderGroup
-                                               select senderGroup.OrderByDescending(m => m.msg.msg_date).FirstOrDefault();
-
-            var result = await latestMessagesWithSenderName.ToListAsync();
-
-            var messagesWithSenderNames = result.Select(item => (item.msg, item.name)).ToList();
-
-            return messagesWithSenderNames;
-        }
+       
 
         public async Task<Msg> SendMessage(int userid, int otherid, string msg)
         {
@@ -367,5 +356,55 @@ namespace WEBAPI.Services
             //
             throw new NotImplementedException();
         }
+        private string GetUserNameId(int id)
+        {
+            var result = (from x in _context.Users
+                          where x.user_id == id
+                          select x.name)
+                          .FirstOrDefault(); // LINQ sorgusunu çalıştır ve ilk sonucu al
+
+            return result;
+        }
+
+        public async Task<List<GetMsgThumbnail>> ReceiveThumbnailMessages(int userId)
+        {
+            var latestMessages = await (from msg in _context.Msg
+                                        join user in _context.Users on msg.msg_sender_id equals user.user_id
+                                        where msg.msg_receiver_id == userId
+                                        group new { msg, user } by user.name into messageGroup
+                                        select new
+                                        {
+                                            SenderName = messageGroup.Key,
+                                            LatestMessage = messageGroup.OrderByDescending(m => m.msg.msg_date).FirstOrDefault()
+                                        })
+                                       .ToListAsync(); // Farklı kişilerden gelen son mesajları gruplayarak al
+
+            var thumbnails = latestMessages.Select(m =>
+            {
+                if (m.LatestMessage != null)
+                {
+                    var latestMsg = m.LatestMessage.msg;
+                    return new GetMsgThumbnail
+                    {
+                        Sendername = m.SenderName,
+                        IsOpen = latestMsg.isOpened,
+                        Lastmsg = latestMsg.msg_detail,
+                        Msgdate = latestMsg.msg_date,
+                        Receivername = _context.Users.FirstOrDefault(u => u.user_id == userId)?.name
+                    };
+                }
+                return null;
+            })
+            .OrderByDescending(m => m.Msgdate)
+            .ToList();
+
+            return thumbnails;
+        }
+      
+
+
+
+
+
     }
 }

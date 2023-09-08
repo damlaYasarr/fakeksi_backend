@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using WEBAPI.Models;
+using WEBAPI.Models.DTO_s;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
 
@@ -124,9 +125,9 @@ namespace WEBAPI.Controllers
         }
        
      [HttpGet("getmsg")]
-        public async Task<ActionResult<List<(Msg,string)>>> GetMsg(int userid)
+        public async Task<ActionResult<List<GetMsgThumbnail>>> GetMsg(int userid)
         {
-            var result = await _usrservice.ReceiveMessage(userid);
+            var result = await _usrservice.ReceiveThumbnailMessages(userid);
             if (result is null)
                 return NotFound("Hero not found.");
 

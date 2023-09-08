@@ -1,5 +1,6 @@
 ﻿
 using WEBAPI.Models;
+using WEBAPI.Models.DTO_s;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Utilities.Security.JWT;
 
@@ -23,7 +24,7 @@ namespace WEBAPI.Services
 
 
         Task<Msg> SendMessage(int userid, int otherid, string msg);
-        Task<List<Msg>> ReceiveMessage(int userid); //bana gelen mesjlar listelenmeli
+        Task<List<GetMsgThumbnail>> ReceiveThumbnailMessages(int userId); //bana gelen mesjlar listelenmeli
         Task<int> GetMsgCount(int userid,int senderid);
         Task<string> GetLastMessage(int userid, int senderid);
         Task DeleteAllMsg(int userid, int senderid);
