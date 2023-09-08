@@ -8,5 +8,6 @@
         public string Lastmsg { get; set; }
         public bool IsOpen { get; set; }
         public string Receivername { get; set; }
+        public int MsgCount { get; set; }
     }
 }

@@ -322,14 +322,7 @@ namespace WEBAPI.Services
             return result.ToString();
         }
 
-        public async Task<int> GetMsgCount(int userid, int senderid)
-        {
-            var result = await _context.Msg
-        .Where(x => x.msg_receiver_id == userid && x.msg_sender_id == senderid)
-        .CountAsync();
-                return result;
-        }
-
+     
         public async Task<string> GetLastMessage(int userid, int senderid)
         {
             //en son tarihe göre getir 
@@ -356,15 +349,8 @@ namespace WEBAPI.Services
             //
             throw new NotImplementedException();
         }
-        private string GetUserNameId(int id)
-        {
-            var result = (from x in _context.Users
-                          where x.user_id == id
-                          select x.name)
-                          .FirstOrDefault(); // LINQ sorgusunu çalıştır ve ilk sonucu al
+       
 
-            return result;
-        }
 
         public async Task<List<GetMsgThumbnail>> ReceiveThumbnailMessages(int userId)
         {
@@ -379,32 +365,43 @@ namespace WEBAPI.Services
                                         })
                                        .ToListAsync(); // Farklı kişilerden gelen son mesajları gruplayarak al
 
-            var thumbnails = latestMessages.Select(m =>
+            var thumbnails = latestMessages.Select(async m =>
             {
                 if (m.LatestMessage != null)
                 {
                     var latestMsg = m.LatestMessage.msg;
+                    var senderId = m.LatestMessage.user.user_id; // Eksik olan senderid burada alınacak
+
                     return new GetMsgThumbnail
                     {
                         Sendername = m.SenderName,
                         IsOpen = latestMsg.isOpened,
                         Lastmsg = latestMsg.msg_detail,
                         Msgdate = latestMsg.msg_date,
+                        MsgCount =  GetMsgCounts(userId, senderId), // GetMsgCount işlemini asenkron olarak çağırın
                         Receivername = _context.Users.FirstOrDefault(u => u.user_id == userId)?.name
                     };
                 }
                 return null;
-            })
-            .OrderByDescending(m => m.Msgdate)
-            .ToList();
+            });
 
-            return thumbnails;
+            var thumbnailsList = await Task.WhenAll(thumbnails);
+
+            return thumbnailsList.OrderByDescending(m => m.Msgdate).ToList();
         }
-      
 
+        public int GetMsgCounts(int userId, int senderId)
+        {
+            var result =  _context.Msg
+                .Where(x => x.msg_receiver_id == userId && x.msg_sender_id == senderId)
+                .Count();
 
+            return result;
+        }
 
-
-
+        Task<int> IUserService.GetMsgCount(int userid, int senderid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
