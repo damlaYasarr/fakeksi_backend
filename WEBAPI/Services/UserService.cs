@@ -15,6 +15,7 @@ using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Utilities.Security.Hashing;
 using WEBAPI.Models.DTO_s;
 using System.Formats.Tar;
+using Castle.DynamicProxy.Generators;
 
 namespace WEBAPI.Services
 {
@@ -307,10 +308,7 @@ namespace WEBAPI.Services
 
         }
 
-        public List<Msg> getAllMssgies(int id)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public async Task<string> GetUserNameById(int id)
         {
@@ -323,26 +321,7 @@ namespace WEBAPI.Services
         }
 
      
-        public async Task<string> GetLastMessage(int userid, int senderid)
-        {
-            //en son tarihe göre getir 
-            var latestMessage = await _context.Msg
-                          .Where(x => x.msg_receiver_id == userid && x.msg_sender_id == senderid)
-                           .OrderByDescending(x => x.msg_date) 
-                          .FirstOrDefaultAsync();
-            string messageContent = latestMessage.msg_detail;
-            if (latestMessage != null)
-            {
-                return messageContent;
-            }
-            else
-            {
-             
-                 throw new Exception("Mesaj bulunamadı");
-              
-            }
 
-        }
 
         public async Task DeleteAllMsg(int userid, int senderid)
         {
@@ -390,7 +369,7 @@ namespace WEBAPI.Services
             return thumbnailsList.OrderByDescending(m => m.Msgdate).ToList();
         }
 
-        public int GetMsgCounts(int userId, int senderId)
+        private int GetMsgCounts(int userId, int senderId)
         {
             var result =  _context.Msg
                 .Where(x => x.msg_receiver_id == userId && x.msg_sender_id == senderId)
@@ -399,9 +378,28 @@ namespace WEBAPI.Services
             return result;
         }
 
-        Task<int> IUserService.GetMsgCount(int userid, int senderid)
+
+        public List<Msg> GetAllMessagesBetweenUsers(int userId1, int userId2)
         {
-            throw new NotImplementedException();
+           
+            var messagesFromUser1ToUser2 = from x in _context.Msg
+                                           where x.msg_sender_id == userId1 && x.msg_receiver_id == userId2
+                                           orderby x.msg_date descending
+                                           select x;
+
+           
+            var messagesFromUser2ToUser1 = from x in _context.Msg
+                                           where x.msg_sender_id == userId2 && x.msg_receiver_id == userId1
+                                           orderby x.msg_date descending
+                                           select x;
+
+          
+            var allMessagesBetweenUsers = messagesFromUser1ToUser2.Concat(messagesFromUser2ToUser1)
+                                                                .OrderByDescending(x => x.msg_date)
+                                                                .ToList();
+
+            return allMessagesBetweenUsers;
         }
+
     }
 }

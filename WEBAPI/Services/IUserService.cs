@@ -25,8 +25,8 @@ namespace WEBAPI.Services
 
         Task<Msg> SendMessage(int userid, int otherid, string msg);
         Task<List<GetMsgThumbnail>> ReceiveThumbnailMessages(int userId); //bana gelen mesjlar listelenmeli
-        Task<int> GetMsgCount(int userid,int senderid);
-        Task<string> GetLastMessage(int userid, int senderid);
+      
+       
         Task DeleteAllMsg(int userid, int senderid);
 
         Task<int> getUserIdByEmail(string email);
@@ -34,7 +34,7 @@ namespace WEBAPI.Services
         Task<int> getUserIdByName(string name);
         bool IsAdmin(string email);
 
-        List<Msg> getAllMssgies(int id);
+        List<Msg> GetAllMessagesBetweenUsers(int userId1, int userId2);
 
 
         List<OperationClaim> GetOperationClaims(Users user);
