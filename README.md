@@ -1,6 +1,6 @@
 # fakeksi_backend
 
-This is the clone project my own inspired [HERE](https://eksisozluk1923.com)
+This is the clone project my own inspired from [HERE](https://eksisozluk1923.com)
 
 - As far as I find time, I contribute some things.
 
