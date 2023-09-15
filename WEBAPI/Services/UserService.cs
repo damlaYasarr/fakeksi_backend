@@ -393,10 +393,11 @@ namespace WEBAPI.Services
                                            orderby x.msg_date descending
                                            select x;
 
-          
-            var allMessagesBetweenUsers = messagesFromUser1ToUser2.Concat(messagesFromUser2ToUser1)
-                                                                .OrderByDescending(x => x.msg_date)
-                                                                .ToList();
+
+            var allMessagesBetweenUsers = messagesFromUser1ToUser2
+            .Concat(messagesFromUser2ToUser1)
+             .OrderBy(x => x.msg_date) 
+                 .ToList();
 
             return allMessagesBetweenUsers;
         }
