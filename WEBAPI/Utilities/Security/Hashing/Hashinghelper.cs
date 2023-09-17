@@ -1,27 +1,27 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace WEBAPI.Utilities.Security.Hashing
 {
     public class Hashinghelper
     {
-        public static void CreatePasswordHash(string password, out byte[] passwordhash, out byte[] passwordsalt  )
-        {   //password encrypted-create
-            using (var hmac= new System.Security.Cryptography.HMACSHA512())
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
             {
-                passwordsalt = hmac.Key;
-                passwordhash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-        public static bool VerifyPasswordHash(string password,  byte[] passwordhash, byte[] passwordsalt)
-        { //verify
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordsalt))
+
+        public static bool VerifyPasswordHash(string password, byte[] storedPasswordHash, byte[] storedPasswordSalt)
+        {
+            using (var hmac = new HMACSHA512(storedPasswordSalt))
             {
-              
-                var computedhash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedhash.Length; i++)
-                {//compare
-                    if (computedhash[i] != passwordhash[i])
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != storedPasswordHash[i])
                     {
                         return false;
                     }
@@ -29,7 +29,6 @@ namespace WEBAPI.Utilities.Security.Hashing
             }
             return true;
         }
-
 
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
-
+using Python.Runtime;
 namespace WEBAPI.Controllers
 {
     
@@ -19,21 +19,20 @@ namespace WEBAPI.Controllers
 
         [Route("login")]
         [HttpPost]
-        public async Task<ActionResult>Login([FromBody]UserForLoginDto userForLoginDto)
+        public async Task<ActionResult<string>> Login([FromBody] UserForLoginDto userForLoginDto)
         {
-            var userToLogin = _usrservice.Login(userForLoginDto);
+            var userToLogin = await _usrservice.Login(userForLoginDto);
+
             if (userToLogin == null)
             {
-                return BadRequest(userToLogin);
+                return Unauthorized("Invalid username or password"); 
             }
-
-            var result = _usrservice.CreateAccessToken(userToLogin);
-            if (result.IsCompleted)
+            var accessToken = await _usrservice.CreateAccessToken(userToLogin);
+            if (accessToken != null)
             {
-                return Ok(result);
+                return Ok(accessToken);
             }
-
-            return BadRequest(null);
+            return BadRequest("kullanıcı olmalı");
         }
 
         [HttpPost("register")]
@@ -44,12 +43,19 @@ namespace WEBAPI.Controllers
             {
                 return BadRequest("null");
             }
+         
+         
 
+       
             var registerResult = _usrservice.Register(userForRegisterDto, userForRegisterDto.password);
-            var result = _usrservice.CreateAccessToken(registerResult);
-            if (result != null)
+          
+            if (registerResult != null)
             {
-                return Ok(result);
+
+
+                 RunScript("__main__", registerResult.email);
+                 
+                return Ok(registerResult);
             }
 
             return BadRequest(null);
@@ -72,5 +78,20 @@ namespace WEBAPI.Controllers
 
             return BadRequest(null);
         }
-    }
+
+
+         static void RunScript(string scriptname,string email)
+        {
+            Runtime.PythonDLL = @"C:\Program Files\Python311\python311.dll";
+            PythonEngine.Initialize();
+
+            using (Py.GIL()) 
+            {
+                dynamic pythonModule = Py.Import(scriptname);
+                pythonModule.InvokeMethod("invokemethod", email); 
+
+
+            }
+        }
+}
 }

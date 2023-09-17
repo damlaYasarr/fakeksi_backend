@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Mono.Unix.Native;
 using WEBAPI.Constants;
 using WEBAPI.Data;
 using WEBAPI.Models;
@@ -20,25 +22,33 @@ namespace WEBAPI.Services
            
         }
 
-        
 
-        public Users Login(UserForLoginDto userForLoginDto)
+
+        public async Task<Users> Login(UserForLoginDto userForLoginDto)
         {
-            var userToCheck = _userService.GetByMail(userForLoginDto.email);
-            //_tokenHelper.CreateToken(userToCheck, cla)
-            //return CreateAccessToken(userToCheck);
-            return userToCheck;
-            /*
-              //to be fixed
+            var userToCheck =  _userService.GetByMail(userForLoginDto.email);
+
             if (userToCheck == null)
             {
-                return null;
+                // Kullanıcı bulunamadı
+                return BadRequest("kullanıcı yok");
             }
-            if (!Hashinghelper.VerifyPasswordHash(userForLoginDto.password, userToCheck.passwordhash, userToCheck.passwordsalt))
+       
+           
+            if (Hashinghelper.VerifyPasswordHash(userForLoginDto.password, userToCheck.passwordhash, userToCheck.passwordsalt))
             {
-                return null;
-            }*/
+                // Şifre uyumsuz
+                return BadRequest("şifre yok");
+            }
 
+            // Token oluşturma ve döndürme
+           
+            return userToCheck;
+        }
+
+        private Users BadRequest(string v)
+        {
+            throw new NotImplementedException();
         }
 
         public Users Register(UserForRegisterDto userForRegisterDto, string password)
@@ -78,11 +88,11 @@ namespace WEBAPI.Services
 
 
 
-        public Task<AccessToken> CreateAccessToken(Users user)
-        {   
-            var claims = _userService.GetOperationClaims(user);
+        public async Task<AccessToken> CreateAccessToken(Users user)
+        {
+            var claims =  _userService.GetOperationClaims(user);
             var accessToken = _tokenHelper.CreateToken(user, claims);
-            return Task.FromResult(accessToken);
+            return accessToken;
         }
 
         public Users ForgotPassword(string email, string password)
