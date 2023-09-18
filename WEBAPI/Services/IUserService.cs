@@ -32,13 +32,14 @@ namespace WEBAPI.Services
         Task<int> getUserIdByEmail(string email);
 
         Task<int> getUserIdByName(string name);
-        bool IsAdmin(string email);
+        //bool IsAdmin(string email);
 
         List<Msg> GetAllMessagesBetweenUsers(int userId1, int userId2);
 
 
         List<OperationClaim> GetOperationClaims(Users user);
         void Add(Users user);
-        Users GetByMail(string email);
+        Task<Users> GetByMail(string email);
+        void UserActive(string email);
     }
 }

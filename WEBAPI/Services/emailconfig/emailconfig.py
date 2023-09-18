@@ -1,48 +1,29 @@
+#!/usr/bin/python
 import smtplib
-from string import Template
-import clr 
-from logger import getJSONLogger
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+from email.message import EmailMessage
+import ssl 
 
-MY_ADDRESS = 'damlayasar40@gmail.com'
-PASSWORD = '***'
+email_sender='dsadadad12@gmail.com'
+email_password='slppzvmxttipdnxo' # two step google verification
 
+def main(email_receiver):
+    subject="fakeksi email verificaton"
+    body="click the link and go to login page  http://localhost:4200/(bla:home/login)"
 
+    em=EmailMessage()
+    em['From']=email_sender
+    em['To']=email_receiver
+    em['subject']=subject
+    em.set_content(body) 
+    '''
+<br/><br/>We are excited to tell you that your account is" +  
+      " successfully created. Please click on the below link to verify your account" +  
+      " <br/><br/><a href='" + varifyUrl + "'></a> 
+     '''
 
-def main(email):
- 
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL('smtp.googlemail.com', 465,  context=context, local_hostname="localhost:7095") as smtp:
+        smtp.login(email_sender,email_password)
+        smtp.sendmail(email_sender,email_receiver,em.as_string())
+   
 
-    # set up the SMTP server
-    s = smtplib.SMTP(host='your_host_address_here', port=your_port_here)
-    s.starttls()
-    s.login(MY_ADDRESS, PASSWORD)
-
-    # For each contact, send the email:
-    for name, email in zip(names, emails):
-        msg = MIMEMultipart()       # create a message
-
-        # add in the actual person name to the message template
-        message = message_template.substitute(PERSON_NAME=name.title())
-
-        # Prints out the message body for our sake
-        print(message)
-
-        # setup the parameters of the message
-        msg['From']=MY_ADDRESS
-        msg['To']=email
-        msg['Subject']="This is TEST go to llogin page activated"
-        
-        # add in the message body
-        msg.attach(MIMEText(message, 'plain'))
-        
-        # send the message via the server set up earlier.
-        s.send_message(msg)
-        del msg
-        
-    # Terminate the SMTP session and close the connection
-    s.quit()
-
-if __name__ == '__main__':
-
-    main()

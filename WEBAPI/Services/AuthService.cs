@@ -26,7 +26,7 @@ namespace WEBAPI.Services
 
         public async Task<Users> Login(UserForLoginDto userForLoginDto)
         {
-            var userToCheck =  _userService.GetByMail(userForLoginDto.email);
+            var userToCheck = await _userService.GetByMail(userForLoginDto.email);
 
             if (userToCheck == null)
             {
@@ -40,7 +40,7 @@ namespace WEBAPI.Services
                 // Şifre uyumsuz
                 return BadRequest("şifre yok");
             }
-
+            //check isActivated true? 
             // Token oluşturma ve döndürme
            
             return userToCheck;
@@ -74,13 +74,12 @@ namespace WEBAPI.Services
             // throw new NotImplementedException();
         }
 
-        public Task UserExists(string email)
+        public  Task UserExists(string email)
         {
-            var result = _userService.GetByMail(email);
+            var result =  _userService.GetByMail(email);
             if (result != null)
             {
-                return Task.FromResult(Messages.UserAlreadyExists
-                    );
+                return Task.FromResult(Messages.UserAlreadyExists);
             }
             return Task.FromResult("user var");
         }
@@ -95,9 +94,9 @@ namespace WEBAPI.Services
             return accessToken;
         }
 
-        public Users ForgotPassword(string email, string password)
+        public async Task<Users> ForgotPassword(string email, string password)
         {
-            var result = _userService.GetByMail(email);
+            var result = await _userService.GetByMail(email);
             byte[] passwordHash, passwordSalt;
             Hashinghelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
             if (result != null)
@@ -110,6 +109,9 @@ namespace WEBAPI.Services
             
         }
 
-      
+        public void RegisterActivate(string email)
+        {
+            _userService.UserActive(email);
+        }
     }
     }

@@ -195,27 +195,27 @@ namespace WEBAPI.Services
             _context.SaveChanges();
         }
 
-        public Users GetByMail(string email)
+        public async Task<Users> GetByMail(string email)
         {
 
-            return _context.Users.SingleOrDefault(e => e.email == email);
+            return  _context.Users.SingleOrDefault(e => e.email == email);
         }
 
-        public bool IsAdmin(string email)
-        {
-            var result = GetByMail(email);
-            if (result == null) return false;
-            if (result.type=="user")
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+        //public Task<bool> IsAdmin(string email)
+        //{
+        //    var result = GetByMail(email);
+        //    if (result == null) return Task.FromResult(false);
+        //    if (result.type == "user")
+        //    {
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        return true;
+        //    }
            
            
-        }
+        //}
 
         public Task<int> getUserIdByEmail(string email)
         {
@@ -402,5 +402,16 @@ namespace WEBAPI.Services
             return allMessagesBetweenUsers;
         }
 
+        public void UserActive(string email)
+        {
+            var result =_context.Users.FirstOrDefault(x => x.email == email);
+            if (result != null)
+            {
+                result.isActive = true;
+                _context.Update(result);
+                _context.SaveChanges();
+            }
+           
+        }
     }
 }

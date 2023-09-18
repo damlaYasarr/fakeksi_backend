@@ -87,15 +87,15 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-        [Route("isAdminorUser")]
-        [HttpPost]
-        public async Task<ActionResult<bool>> GetResult(string email)
-        {
-            var result =  _usrservice.IsAdmin(email);
+        //[Route("isAdminorUser")]
+        //[HttpPost]
+        //public async Task<ActionResult<bool>> GetResult(string email)
+        //{
+        //    var result =  _usrservice.IsAdmin(email);
             
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
       
         [HttpGet("UserProfileDetail")]
