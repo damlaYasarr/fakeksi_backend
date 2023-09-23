@@ -27,14 +27,17 @@ namespace WEBAPI.Services
             _context = context;
         }
 
-        //kişinin bütün yazdığı tagleri listele
-        //kişinin bütün entryleri listele
 
         public async Task<Tag> ShareTag(int user_id, string def)
         {
             
             DateTime dt = DateTime.Now;
             string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
+            var result = await _context.Tags.FirstAsync(x=> x.definition==def);
+
+            if(result != null) {
+                return null;
+            }
             //yazılan tag'in id'sini almak gerekir mi?
             Tag shareentry = new Tag()
             {
@@ -58,7 +61,12 @@ namespace WEBAPI.Services
             //create entry kod
             DateTime dt = DateTime.Now; // Or whatever
             string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
-
+            var result = await _context.Entries.FirstAsync(x => x.definition == content.definition);
+            //block duplicate definition
+            if (result != null)
+            {
+                return null;
+            }
             Entry addlike = new Entry()
                 {
                     user_id = content.user_id,
@@ -122,6 +130,26 @@ namespace WEBAPI.Services
                          };
 
           
+
+            return Task.FromResult(result.ToList());
+        }
+        public Task<List<GetContents>> GetAllTagwithEntriesByUserName(string name)
+        {
+            var result = from r in _context.Entries
+                         join x in _context.Users on name equals x.name
+                         join u in _context.Tags on r.tag_id equals u.id into ux
+                         from u in ux.DefaultIfEmpty()
+                         where r.user_id == x.user_id
+                         select new GetContents
+                         {
+                             name = x.name,
+                             enrydate = r.date_entry,
+                             tagname = u.definition,
+                             entries = r.definition,
+                             kod = r.kod
+                         };
+
+
 
             return Task.FromResult(result.ToList());
         }
@@ -368,6 +396,11 @@ namespace WEBAPI.Services
             ).FirstOrDefaultAsync();
 
             return result;
+        }
+
+        public Task<List<GetContents>> GetTodayContent()
+        {
+            throw new NotImplementedException();
         }
     }
 }

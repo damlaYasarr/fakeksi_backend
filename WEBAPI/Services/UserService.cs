@@ -231,40 +231,39 @@ namespace WEBAPI.Services
             return Task.FromResult(k);
         }
 
-        public Task<UserForProfileInfo> GetUserProfileInfo(int id)
+        public async Task<UserForProfileInfo> GetUserProfileInfo(int id)
         {
-            var result = from user in _context.Users
-                               where user.user_id == id
-                               select user;
-            string name="";
-            foreach(var t in result) { name = t.name; }
+           
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.user_id == id);
 
-            //Kişinin toplam takipçi sayısı follower tablosundan alınır
-            int followersCount = (from x in _context.Followers
-                                 where x.follower_id == id
-                                 select x).Count();
-            if(followersCount ==null) { followersCount = 0; }
+         
+            if (user == null)
+            {
+                return null; 
+            }
 
-            //Kişinin toplam takip edilen sayısı follower tablosundan alınır
-            int followed = (from x in _context.Followers
-                                  where x.followed_id == id
-                                  select x).Count();
-            if (followed == null) { followed = 0; }
-            //Kişinin toplam entry sayısı entry tablosundan alınır
-            int entriesCount = (from e in _context.Entries
-                               where e.user_id == id
-                                select e).Count();
-            if (entriesCount == null) { entriesCount = 0; }
+           
+            int followersCount = await _context.Followers
+                .Where(x => x.follower_id == id)
+                .CountAsync();
+
+            int followedCount = await _context.Followers
+                .Where(x => x.followed_id == id)
+                .CountAsync();
+
+            int entriesCount = await _context.Entries
+                .Where(e => e.user_id == id)
+                .CountAsync();
+
             UserForProfileInfo info = new UserForProfileInfo()
             {
-               followednumber = followed,
-               username=name,
-               followernumber=followersCount,
-               totalentrynumber=entriesCount,
+                followednumber = followedCount,
+                username = user.name,
+                followernumber = followersCount,
+                totalentrynumber = entriesCount,
             };
 
-
-            return Task.FromResult(info);
+            return info;
         }
 
         public Task<int> getUserIdByName(string name)

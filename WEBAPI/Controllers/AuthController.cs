@@ -46,13 +46,13 @@ namespace WEBAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult>Register(UserForRegisterDto userForRegisterDto)
         {
-            dynamic userExists = _usrservice.UserExists(userForRegisterDto.email);
-            if (userExists == null)
+            var userExists = _usrservice.UserExists(userForRegisterDto.email);
+            if (userExists != null)
             {
-                return BadRequest("null");
+                return BadRequest("kullanıcı zaten var ");
             }
        
-            dynamic registerResult = _usrservice.Register(userForRegisterDto, userForRegisterDto.password);
+            var registerResult = _usrservice.Register(userForRegisterDto, userForRegisterDto.password);
             if (registerResult != null)
             {
                 try
@@ -65,7 +65,7 @@ namespace WEBAPI.Controllers
                     //main is my funciton name
                     Python_File.main(userForRegisterDto.email.ToString());
                     _usrservice.RegisterActivate(userForRegisterDto.email);
-                    return registerResult;
+                    return Ok( registerResult);
 
                 }
                 catch (Exception ex)
@@ -74,7 +74,7 @@ namespace WEBAPI.Controllers
                     Console.WriteLine("An error occurred: " + ex.Message);
                 }
 
-                //return Ok(registerResult);
+              
             }
 
             return BadRequest(null);
@@ -82,14 +82,14 @@ namespace WEBAPI.Controllers
         [HttpPost("forgotpassword")]
         public async Task<ActionResult> Register(string email, string password)
         {
-            dynamic userExists = _usrservice.UserExists(email);
+            var userExists = _usrservice.UserExists(email);
             if (userExists == null)
             {
                 return BadRequest("null");
             }
 
             
-            dynamic result = _usrservice.ForgotPassword(email,password);
+            var result = _usrservice.ForgotPassword(email,password);
             if (result != null)
             {
                 return Ok(result);
@@ -99,19 +99,19 @@ namespace WEBAPI.Controllers
         }
 
 
-         static void RunScript(string scriptPath, string functionname, string email)
+        // static void RunScript(string scriptPath, string functionname, string email)
         
-            {
-            Runtime.PythonDLL = @"C:\Program Files\Python311\python311.dll";
-            PythonEngine.Initialize();
+        //    {
+        //    Runtime.PythonDLL = @"C:\Program Files\Python311\python311.dll";
+        //    PythonEngine.Initialize();
 
-            using (Py.GIL())
-            {
-                dynamic pythonModule = Py.Import(scriptPath);
-                dynamic pythonFunction = pythonModule.ToPython(functionname);
-                pythonFunction(email);
+        //    using (Py.GIL())
+        //    {
+        //        dynamic pythonModule = Py.Import(scriptPath);
+        //        dynamic pythonFunction = pythonModule.ToPython(functionname);
+        //        pythonFunction(email);
                
-            }
-        }
+        //    }
+        //}
 }
 }

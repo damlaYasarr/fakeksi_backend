@@ -15,11 +15,7 @@ def main(email_receiver):
     em['To']=email_receiver
     em['subject']=subject
     em.set_content(body) 
-    '''
-<br/><br/>We are excited to tell you that your account is" +  
-      " successfully created. Please click on the below link to verify your account" +  
-      " <br/><br/><a href='" + varifyUrl + "'></a> 
-     '''
+ 
 
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL('smtp.googlemail.com', 465,  context=context, local_hostname="localhost:7095") as smtp:

@@ -40,8 +40,7 @@ namespace WEBAPI.Services
                 // Şifre uyumsuz
                 return BadRequest("şifre yok");
             }
-            //check isActivated true? 
-            // Token oluşturma ve döndürme
+           
            
             return userToCheck;
         }
@@ -65,8 +64,7 @@ namespace WEBAPI.Services
                 register_date = s,
                 type = "user",
                 passwordhash = passwordHash,
-                passwordsalt = passwordSalt,
-                isActive = true
+                passwordsalt = passwordSalt
             };
           
             _userService.Add(user);
@@ -81,7 +79,7 @@ namespace WEBAPI.Services
             {
                 return Task.FromResult(Messages.UserAlreadyExists);
             }
-            return Task.FromResult("user var");
+            return null;
         }
 
 

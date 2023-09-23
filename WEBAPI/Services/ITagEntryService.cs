@@ -30,6 +30,10 @@ namespace WEBAPI.Services
         Task<int> GetTagIdByTagName(string name);
         Task<List<GetContents>> GetAllTagwithEntries(int userid);
         Task<List<string>> SearchFindTagandUserName(string input);
+        
+        Task<List<GetContents>> GetTodayContent();
 
+        //python sentiment analysis
+        Task<List<GetContents>> GetAllTagwithEntriesByUserName(string name);
     }
 }

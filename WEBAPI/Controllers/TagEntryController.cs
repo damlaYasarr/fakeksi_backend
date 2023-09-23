@@ -149,5 +149,29 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.SearchFindTagandUserName(nn);
             return Ok(result);
         }
+        [HttpGet("criticize")]
+        public  Task Sentiment(string username)
+        {
+            try
+            {
+                
+                var result= _tagentryservice.GetAllTagwithEntriesByUserName(username);
+                IDictionary<string, object> options = new Dictionary<string, object>();
+                options["Arguments"] = new[] { @"C:\Program Files (x86)\IronPython 2.7\Lib", "bar" };
+                var name = @"C:\Users\damla\source\repos\fakeksi_backend\WEBAPI\Services\criticize\sentiment.py";
+                var ipy = IronPython.Hosting.Python.CreateRuntime(options);
+                dynamic Python_File = ipy.UseFile(name);
+                //main is my funciton callmebyname
+                dynamic results = Python_File.callmebyname();
+                return Ok(results);
+              
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }
