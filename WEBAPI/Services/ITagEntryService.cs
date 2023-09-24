@@ -13,8 +13,7 @@ namespace WEBAPI.Services
         Task<List<string>> GetTagAllTag();
         Task<List<string>> GetTagwithEntries(int tag_id);
         Task<List<GetContents>> GetAllEntries(int tagid);
-        Task<List<string>> ListTagsByDate();
-        Task<List<Tag>> ListTagsByContent();
+        
         Task<List<GetContents>> ListTagsandOneEntryByLikeCount();
 
         Task<int> GetEntryIdByName(string entryidetail);
@@ -35,5 +34,9 @@ namespace WEBAPI.Services
 
         //python sentiment analysis
         Task<List<GetContents>> GetAllTagwithEntriesByUserName(string name);
+
+
+        Task<List<OtherUserProfile>> GetOtherUserPofile(string name);
+        Task<string> TagAndEntryAdd(int userId, string tagDefinition, string entryDefinition);
     }
 }

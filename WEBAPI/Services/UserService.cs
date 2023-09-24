@@ -378,30 +378,27 @@ namespace WEBAPI.Services
         }
 
 
-        public List<Msg> GetAllMessagesBetweenUsers(int userId1, int userId2)
+        public async Task<List<Msg>> GetAllMessagesBetweenUsers(int userId1, int userId2)
         {
-           
-            var messagesFromUser1ToUser2 = from x in _context.Msg
-                                           where x.msg_sender_id == userId1 && x.msg_receiver_id == userId2
-                                           orderby x.msg_date descending
-                                           select x;
+                var messagesFromUser1ToUser2 = await _context.Msg
+                    .Where(x => x.msg_sender_id == userId1 && x.msg_receiver_id == userId2 && x.msg_date != null)
+                    .OrderBy(x => x.msg_date)
+                    .ToListAsync();
 
-           
-            var messagesFromUser2ToUser1 = from x in _context.Msg
-                                           where x.msg_sender_id == userId2 && x.msg_receiver_id == userId1
-                                           orderby x.msg_date descending
-                                           select x;
+                var messagesFromUser2ToUser1 = await _context.Msg
+                    .Where(x => x.msg_sender_id == userId2 && x.msg_receiver_id == userId1 && x.msg_date != null)
+                    .OrderBy(x => x.msg_date)
+                    .ToListAsync();
 
+                var allMessagesBetweenUsers = messagesFromUser1ToUser2
+                    .Concat(messagesFromUser2ToUser1)
+                    .OrderBy(x => x.msg_date)
+                    .ToList();
 
-            var allMessagesBetweenUsers = messagesFromUser1ToUser2
-            .Concat(messagesFromUser2ToUser1)
-             .OrderBy(x => x.msg_date) 
-                 .ToList();
+                return allMessagesBetweenUsers;
+            }
 
-            return allMessagesBetweenUsers;
-        }
-
-        public void UserActive(string email)
+            public void UserActive(string email)
         {
             var result =_context.Users.FirstOrDefault(x => x.email == email);
             if (result != null)

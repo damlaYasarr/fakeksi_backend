@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using WEBAPI.Models;
@@ -136,7 +136,7 @@ namespace WEBAPI.Controllers
         [HttpGet("GetAllMessagesBetweenUsers")]
         public async Task<ActionResult<List<Msg>>> GetAllMessagesBetweenUsers(int user1, int user2)
         {
-            var result =  _usrservice.GetAllMessagesBetweenUsers(user1,user2);
+            var result = await _usrservice.GetAllMessagesBetweenUsers(user1,user2);
             if (result is null)
                 return NotFound("Hero not found.");
 

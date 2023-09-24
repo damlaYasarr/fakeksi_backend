@@ -27,33 +27,34 @@ namespace WEBAPI.Services
             _context = context;
         }
 
-
         public async Task<Tag> ShareTag(int user_id, string def)
         {
-            
             DateTime dt = DateTime.Now;
             string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
-            var result = await _context.Tags.FirstAsync(x=> x.definition==def);
 
-            if(result != null) {
-                return null;
+            // Check if a tag with the same definition already exists
+            var existingTag = await _context.Tags.FirstOrDefaultAsync(x => x.definition == def);
+
+            if (existingTag != null)
+            {
+            
+                return null; 
             }
-            //yazılan tag'in id'sini almak gerekir mi?
+
+            // Create a new tag
             Tag shareentry = new Tag()
             {
                 user_id = user_id,
-                definition =def,
+                definition = def,
                 datetime = s
             };
 
             _context.Tags.Add(shareentry);
-                await _context.SaveChangesAsync();
-                return shareentry;
-
-
+            await _context.SaveChangesAsync();
+            return shareentry;
         }
 
-      
+
         public async Task<Entry> AddEntry(ShareEntry content)
         {
            
@@ -182,38 +183,7 @@ namespace WEBAPI.Services
             return result;
         }
 
-        public Task<List<string>> ListTagsByDate()
-        {
-            //bugün atılan başlık bugün başlığı altında yayınlanacak
-            DateTime dt = DateTime.Now;
-            string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
-            var firstvalue = s.Split(" ")[0];
-          
-            var result = from x in _context.Tags
-                         select x;
-           
-            List<string> listtag = new();
-            foreach (var t in result)
-            {
-                var xx = t.datetime.Split(" ")[0];
-                if (firstvalue == xx)
-                {
-                    listtag.Add(t.definition);
-                    
-                }
-            }
-            
-            //GETİRİLEN LİSTE RANDOM YAPILACAK 
-            return Task.FromResult(listtag);
-
-
-        }
-
-        public Task<List<Tag>> ListTagsByContent()
-        {
-            //it will be made last .
-            throw new NotImplementedException();
-        }
+       
 
    
 
@@ -397,10 +367,72 @@ namespace WEBAPI.Services
 
             return result;
         }
+      
 
-        public Task<List<GetContents>> GetTodayContent()
+        public async Task<List<Tag>> GetTodayContent()
+        {
+            DateTime today = DateTime.Now.Date;
+
+            var tagQuery = from tag in _context.Tags
+                           where _context.Entries.Any(entry => entry.tag_id == tag.id && entry.date_entry == today.ToString())
+                           select tag;
+
+            List<Tag> listTag = await tagQuery.ToListAsync(); 
+
+            return listTag;
+        }
+
+        public Task<List<OtherUserProfile>> GetOtherUserPofile(string name)
+        {
+            throw new NotImplementedException();
+
+
+        }
+
+        public async Task<string> TagAndEntryAdd(int userId, string tagDefinition, string entryDefinition)
+        {
+
+            DateTime today = DateTime.Now.Date;
+            try
+            { 
+                // Create a new Tag entity and Entry entity
+                var newTag = new Tag
+                {
+                    user_id = userId,
+                    definition = tagDefinition, 
+                    datetime=today.ToString(),
+                    // Other properties related to Tag
+                };
+
+                var newEntry = new Entry
+                {
+                    user_id = userId,
+                    definition = entryDefinition,
+                    date_entry = today.ToString()
+                   
+                };
+
+               
+                _context.Tags.Add(newTag);
+                _context.Entries.Add(newEntry);
+
+             
+                await _context.SaveChangesAsync();
+
+                return "Tag and Entry added successfully.";
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions as needed
+                return $"An error occurred: {ex.Message}";
+            }
+        }
+
+        Task<List<GetContents>> ITagEntryService.GetTodayContent()
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }

@@ -38,7 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\criticize\" />
     <Folder Include="wwwRoot\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>

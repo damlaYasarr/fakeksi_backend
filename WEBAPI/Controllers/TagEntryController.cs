@@ -24,7 +24,14 @@ namespace WEBAPI.Controllers
           var result=  await _tagentryservice.ShareTag(user_id, def);
             return Ok(result); 
         }
-    
+        //TagAndEntryAdd
+
+        [HttpPost("tagandentry")]
+        public async Task<ActionResult<Tag>> AddtagandEntry(int user_id, string def,string entr_def)
+        {
+            var result = await _tagentryservice.TagAndEntryAdd(user_id, def,entr_def);
+            return Ok(result);
+        }
         [HttpPost("entryekle")]
         public async Task<ActionResult<Entry>> AddEntries(ShareEntry content)
         {
@@ -63,7 +70,7 @@ namespace WEBAPI.Controllers
         public async Task<ActionResult<List<string>>> ListTagsByDate()
         {
 
-            var result = await _tagentryservice.ListTagsByDate();
+            var result = await _tagentryservice.GetTodayContent();
             return Ok(result);
         }
         [Route("entries{id}")]
