@@ -27,21 +27,25 @@ namespace WEBAPI.Services
         public async Task<Users> Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = await _userService.GetByMail(userForLoginDto.email);
-
+            
             if (userToCheck == null)
             {
                 // Kullanıcı bulunamadı
                 return BadRequest("kullanıcı yok");
             }
-       
-           
+
+            if (!userToCheck.isActive)
+            {
+                return BadRequest("kullanıcı aktifleştirme emaili açmadı");
+            }
             if (Hashinghelper.VerifyPasswordHash(userForLoginDto.password, userToCheck.passwordhash, userToCheck.passwordsalt))
             {
                 // Şifre uyumsuz
                 return BadRequest("şifre yok");
             }
-           
-           
+
+            _userService.UserActive(userForLoginDto.email);
+
             return userToCheck;
         }
 
