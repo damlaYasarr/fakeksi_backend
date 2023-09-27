@@ -1,26 +1,20 @@
-﻿using GW2NET.Items;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Channels;
+using System.Globalization;
 using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
 using WEBAPI.Models.DTO_s.UserDTos;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static IronPython.Modules._ast;
+
 
 namespace WEBAPI.Services
 {
     public class TagEntryService : ITagEntryService
     {
         private readonly DataContext _context;
-       
+
 
         public TagEntryService(DataContext context)
         {
@@ -37,8 +31,8 @@ namespace WEBAPI.Services
 
             if (existingTag != null)
             {
-            
-                return null; 
+
+                return null;
             }
 
             // Create a new tag
@@ -57,37 +51,33 @@ namespace WEBAPI.Services
 
         public async Task<Entry> AddEntry(ShareEntry content)
         {
-           
+
 
             //create entry kod
             DateTime dt = DateTime.Now; // Or whatever
             string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
-            var result = await _context.Entries.FirstAsync(x => x.definition == content.definition);
-            //block duplicate definition
-            if (result != null)
-            {
-                return null;
-            }
+           
+          
             Entry addlike = new Entry()
-                {
-                    user_id = content.user_id,
-                    tag_id = content.tag_id,
-                    definition = content.definition,
-                    date_entry=s,
-                    kod=createCode()
-                };
-                _context.Entries.Add(addlike);
-                await _context.SaveChangesAsync();
-                return await Task.FromResult(addlike);
-            
-            
-            
-            
+            {
+                user_id = content.user_id,
+                tag_id = content.tag_id,
+                definition = content.definition,
+                date_entry = s,
+                kod = createCode()
+            };
+            _context.Entries.Add(addlike);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(addlike);
+
+
+
+
 
         }
         public async Task<string?> GetTagContentwithId(int id)
         {
-            var result= _context.Tags.SingleOrDefault(t => t.id == id);
+            var result = _context.Tags.SingleOrDefault(t => t.id == id);
             if (result == null)
             {
                 return "bu id ile tag yok";
@@ -97,8 +87,8 @@ namespace WEBAPI.Services
 
         public Task<List<string>> GetTagAllTag()
         {
-            var result=from t in _context.Tags
-                       select t.definition;
+            var result = from t in _context.Tags
+                         select t.definition;
 
             return Task.FromResult(result.ToList());
         }
@@ -127,10 +117,10 @@ namespace WEBAPI.Services
                              enrydate = r.date_entry,
                              tagname = u.definition,
                              entries = r.definition,
-                             kod=r.kod
+                             kod = r.kod
                          };
 
-          
+
 
             return Task.FromResult(result.ToList());
         }
@@ -160,12 +150,12 @@ namespace WEBAPI.Services
                          join x in _context.Users on r.user_id equals x.user_id
                          join u in _context.Tags on r.tag_id equals u.id into ux
                          from u in ux.DefaultIfEmpty()
-                         where r.tag_id==tagid
+                         where r.tag_id == tagid
                          select new GetContents
                          {
                              name = x.name,
                              enrydate = r.date_entry,
-                            
+
                              entries = r.definition,
                              kod = r.kod
                          };
@@ -183,9 +173,9 @@ namespace WEBAPI.Services
             return result;
         }
 
-       
 
-   
+
+
 
         public Task<List<GetContents>> ListTagsandOneEntryByLikeCount()
         {//pretty hard
@@ -199,21 +189,21 @@ namespace WEBAPI.Services
                         on entry.tag_id equals tag.id
                         join user in _context.Users
                         on entry.user_id equals user.user_id
-                        select new GetContents { 
-                            name=user.name, 
-                            tagname=tag.definition,
-                            enrydate=entry.date_entry,
-                            entries=entry.definition,
-                            kod=entry.kod,
-                            likecount=popularEntry };
+                        select new GetContents {
+                            name = user.name,
+                            tagname = tag.definition,
+                            enrydate = entry.date_entry,
+                            entries = entry.definition,
+                            kod = entry.kod,
+                            likecount = popularEntry };
             var result = query.FirstOrDefault();
-           return Task.FromResult(query.ToList());
+            return Task.FromResult(query.ToList());
         }
         public async Task<bool> AddLike(int user_id, int entry_id)
         {
             var resul = from x in _context.Likes
-                         where x.user_id == user_id && x.entry_id == entry_id
-                         select x.like_id;
+                        where x.user_id == user_id && x.entry_id == entry_id
+                        select x.like_id;
             if (resul.IsNullOrEmpty())
             {
                 Likes addlike = new Likes()
@@ -229,7 +219,7 @@ namespace WEBAPI.Services
             {
                 return false;
             }
-             
+
         }
         public async Task<string> DeleteLike(int user_id, int entry_id)
         {
@@ -250,12 +240,12 @@ namespace WEBAPI.Services
             }
             catch (Exception ex)
             {
-        
+
                 return "An error occurred while deleting the like.";
             }
         }
-     
-        public Task<int> GetLikeCountLike( int entry_id)
+
+        public Task<int> GetLikeCountLike(int entry_id)
         {
             var result = from x in _context.Likes
                          where x.entry_id == entry_id
@@ -268,8 +258,8 @@ namespace WEBAPI.Services
                          join r in _context.Likes on x.user_id equals r.user_id
                          where r.entry_id == entry_id
                          select x;
-            List<string> namelist = new(); 
-            foreach(var tt in result)
+            List<string> namelist = new();
+            foreach (var tt in result)
             {
                 namelist.Add(tt.name);
 
@@ -278,21 +268,21 @@ namespace WEBAPI.Services
         }
 
         public Task<List<string>> TopTrendwithMaxEntryNumber()
-        { 
+        {
             //1 haftanın en fazla entry alan tagleri
             throw new NotImplementedException();
         }
 
         public Task<List<GetTagandEntryCount>> TopEntrylikescount()
         {
-            
+
             var result1 = from t in _context.Tags
                           join e in _context.Entries on t.id equals e.tag_id
                           group t.definition by t.definition into g
                           select new GetTagandEntryCount { Tag = g.Key, entryCount = g.Count() };
 
 
-            return Task.FromResult( result1.ToList());
+            return Task.FromResult(result1.ToList());
         }
 
         public Task<int> GetTagIdByTagName(string name)
@@ -301,7 +291,7 @@ namespace WEBAPI.Services
                          where x.definition == name
                          select x;
             int k = 0;
-            foreach(var t in result) { k = t.id; }
+            foreach (var t in result) { k = t.id; }
             return Task.FromResult(k);
 
         }
@@ -313,7 +303,7 @@ namespace WEBAPI.Services
             var result = from x in _context.Tags
                          select x.definition;
             var user = from x in _context.Users
-                         select x.name;
+                       select x.name;
             List<string> sentences = new();
 
 
@@ -324,14 +314,14 @@ namespace WEBAPI.Services
                 {
                     sentences.Add(xx);
                 }
-                
+
             }
             foreach (var item in user)
             {
                 string xx = item.ToString();
                 if (xx.Contains(input))
                 {
-                    sentences.Add("@"+xx);
+                    sentences.Add("@" + xx);
                 }
 
             }
@@ -367,7 +357,7 @@ namespace WEBAPI.Services
 
             return result;
         }
-      
+
 
         public async Task<List<Tag>> GetTodayContent()
         {
@@ -377,62 +367,74 @@ namespace WEBAPI.Services
                            where _context.Entries.Any(entry => entry.tag_id == tag.id && entry.date_entry == today.ToString())
                            select tag;
 
-            List<Tag> listTag = await tagQuery.ToListAsync(); 
+            List<Tag> listTag = await tagQuery.ToListAsync();
 
             return listTag;
         }
 
-        public Task<List<OtherUserProfile>> GetOtherUserPofile(string name)
-        {
-            throw new NotImplementedException();
 
-
-        }
-
-        public async Task<string> TagAndEntryAdd(int userId, string tagDefinition, string entryDefinition)
-        {
-
+        public async Task<string> TagAndEntryAdd(int userId, string tagDefinition, string entryDefinition) {
             DateTime today = DateTime.Now.Date;
             try
-            { 
-                // Create a new Tag entity and Entry entity
+            {
                 var newTag = new Tag
                 {
                     user_id = userId,
-                    definition = tagDefinition, 
-                    datetime=today.ToString(),
-                    // Other properties related to Tag
+                    definition = tagDefinition,
+                    datetime = today.ToString(),
+
                 };
 
-                var newEntry = new Entry
-                {
-                    user_id = userId,
-                    definition = entryDefinition,
-                    date_entry = today.ToString()
-                   
-                };
-
-               
                 _context.Tags.Add(newTag);
-                _context.Entries.Add(newEntry);
-
-             
                 await _context.SaveChangesAsync();
+                var result = _context.Tags.FirstOrDefault(e => e.definition == tagDefinition);
+
+                if (result != null)
+                {
+                    var newEntry = new Entry
+                    {
+                        user_id = userId,
+                        definition = entryDefinition,
+                        date_entry = today.ToString(),
+                        tag_id = result.id,
+                        kod = createCode()
+                    };
+
+                    _context.Entries.Add(newEntry);
+                    await _context.SaveChangesAsync();
+                }
 
                 return "Tag and Entry added successfully.";
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
-                return $"An error occurred: {ex.Message}";
+
+                return "Error: " + ex.Message;
             }
         }
-
-        Task<List<GetContents>> ITagEntryService.GetTodayContent()
+    
+        public Task<List<GetContents>> GetAllTagwithEntriesByDateToday()
         {
-            throw new NotImplementedException();
-        }
+            DateTime today = DateTime.Now.Date;
 
-       
+            // Bugünün tarihini uygun bir biçime dönüştür
+            string todayString = today.ToString("dd.MM.yyyy");
+
+            var result = from r in _context.Entries
+                         join x in _context.Users on r.user_id equals x.user_id
+                         join u in _context.Tags on r.tag_id equals u.id into ux
+                         from u in ux.DefaultIfEmpty()
+                         where r.user_id == x.user_id  && r.date_entry.StartsWith(todayString)
+                         select new GetContents
+                         {
+                             name = x.name,
+                             enrydate = r.date_entry,
+                             tagname = u.definition,
+                             entries = r.definition,
+                             kod = r.kod
+                         };
+
+            return Task.FromResult(result.ToList());
+        }
     }
 }

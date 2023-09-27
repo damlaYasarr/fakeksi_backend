@@ -66,13 +66,7 @@ namespace WEBAPI.Controllers
             var result=  await _tagentryservice.GetAllTagwithEntries(id);
             return Ok(result);
         }
-        [HttpGet("listAllTagByDate")]
-        public async Task<ActionResult<List<string>>> ListTagsByDate()
-        {
-
-            var result = await _tagentryservice.GetTodayContent();
-            return Ok(result);
-        }
+      
         [Route("entries{id}")]
         [HttpGet]
         public async Task<ActionResult<List<GetContents>>> GetEntries(int id)
@@ -134,6 +128,13 @@ namespace WEBAPI.Controllers
             var result = await _tagentryservice.ListTagsandOneEntryByLikeCount();
             return Ok(result);
         }
+        [HttpGet("gettodayflow")]
+        public async Task<ActionResult<GetContents>> GetAllTagwithEntriesByDateToday()
+        {
+            var result = await _tagentryservice.GetAllTagwithEntriesByDateToday();
+            return Ok(result);
+        }
+            
         [HttpGet("tagidbyname")]
         public async Task<ActionResult<GetTagandEntryCount>> GetTagIdByTagname(string name)
         {
