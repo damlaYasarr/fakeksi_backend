@@ -2,7 +2,10 @@
 {
     public class UserForLoginDto
     {
-        public string email { get; set; }
-        public string password { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Token { get; internal set; } // Consider if you need to expose the Token property
     }
+
+    
 }

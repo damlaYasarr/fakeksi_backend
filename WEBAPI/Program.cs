@@ -1,83 +1,92 @@
-
-using Autofac.Core;
-using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
 using WEBAPI.Data;
 using WEBAPI.Services;
-using Microsoft.AspNet.SignalR;
-using WEBAPI.Utilities.Security.Encryption;
-using WEBAPI.Utilities.Security.JWT;
+using WEBAPI.Utilities.jwt;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
+
+// Configure services
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Configure Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IUserService, UserService>();
 
-
-builder.Services.AddScoped<ITagEntryService, TagEntryService>();
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenHelper, JwtHelper>();
+// Configure DbContext
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddSignalR();
 
+// Register application services
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddScoped<ITagEntryService, TagEntryService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Register TokenOptions and JwtHelper
+var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+builder.Services.AddSingleton(tokenOptions);
+builder.Services.AddScoped<ITokenHelper, JwtHelper>();
+
+
+// Configure JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = tokenOptions.Issuer,
+            ValidAudience = tokenOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SecurityKey)),
+            ClockSkew = TimeSpan.Zero // Optional: Adjust if needed
+        };
+    });
+
+// Add other services
+builder.Services.AddCors();
+builder.Services.AddSignalR();
 builder.Services.AddRazorPages();
 
-
-builder.Services.AddCors();
-
-
-
-/*
-            services.AddDependencyResolvers(new ICoreModule[]
-            {
-                new CoreModule(),
-            });
- 
- */
-var tokenoptions = builder.Configuration.GetSection("TokenOptions").Get<WEBAPI.Utilities.Security.JWT.TokenOptions>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidIssuer = tokenoptions.Issuer,
-        ValidAudience = tokenoptions.Audience,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenoptions.SecurityKey)
-    };
-});
-
 var app = builder.Build();
-var hubConfiguration = new HubConfiguration();
-hubConfiguration.EnableDetailedErrors = true;
-hubConfiguration.EnableJavaScriptProxies = false;
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    );
 
 app.UseHttpsRedirection();
-app.UseAuthentication();//first
-app.UseAuthorization();
-app.UseRouting();
-app.MapControllers();
 
-app.UseDeveloperExceptionPage();
-//app.MapSignalR("/signalr", new HubConfiguration());
+// Enable CORS
+app.UseCors(policy =>
+    policy.WithOrigins("http://localhost:4200")
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+          .AllowCredentials()
+);
+
+// Authentication and Authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Configure routing
+app.UseRouting();
+
+// Map controllers and SignalR hubs
+app.MapControllers();
+// app.MapHub<YourHub>("/signalr"); // Uncomment if you use SignalR
+
 app.Run();

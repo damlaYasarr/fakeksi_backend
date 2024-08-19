@@ -12,11 +12,11 @@ namespace WEBAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _usrservice;
-       
+
         public UserController(IUserService usrservice)
         {
             _usrservice = usrservice;
-            
+
         }
 
         [HttpGet]
@@ -25,7 +25,7 @@ namespace WEBAPI.Controllers
             return await _usrservice.GetAllUsers();
         }
 
-      
+
         [HttpGet("getuserbyid")]
         public async Task<ActionResult<Users>> GetSingleHero(int id)
         {
@@ -50,7 +50,7 @@ namespace WEBAPI.Controllers
         [HttpGet("GetUserNameById")]
         public async Task<ActionResult<int>> GetUserNameById(int id)
         {
-            var result = await _usrservice.GetUserNameById( id);
+            var result = await _usrservice.GetUserNameById(id);
             return Ok(result);
         }
         [HttpPost("addFollower")]
@@ -64,7 +64,7 @@ namespace WEBAPI.Controllers
         [HttpDelete("deletefollower")]
         public async Task<ActionResult<Users>> DeleteFollower(int id, int otherid)
         {
-             await _usrservice.DeleteFollower(id, otherid);
+            await _usrservice.DeleteFollower(id, otherid);
 
 
             return Ok("işlem başarılı");
@@ -72,7 +72,7 @@ namespace WEBAPI.Controllers
         [HttpGet("getAllFollower")]
         public async Task<ActionResult<List<string>>> GetAllFollower(int id)
         {
-            var result=await _usrservice.GetAllFollower(id);
+            var result = await _usrservice.GetAllFollower(id);
 
 
             return Ok(result);
@@ -92,12 +92,12 @@ namespace WEBAPI.Controllers
         //public async Task<ActionResult<bool>> GetResult(string email)
         //{
         //    var result =  _usrservice.IsAdmin(email);
-            
+
 
         //    return Ok(result);
         //}
 
-      
+
         [HttpGet("UserProfileDetail")]
         public async Task<ActionResult<List<Users>>> GetUserProfileDetail(int id)
         {
@@ -105,14 +105,7 @@ namespace WEBAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<List<Users>>> UpdateHero(int id, Users request)
-        {
-          //  var result = await _usrservice.UpdateHero(id, request);
-           
-
-            return Ok("");
-        }
+    
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Users>>> DeleteHero(int id)
@@ -123,8 +116,8 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
-       
-     [HttpGet("getmsgThumbnail")]
+
+        [HttpGet("getmsgThumbnail")]
         public async Task<ActionResult<List<GetMsgThumbnail>>> GetMsg(int userid)
         {
             var result = await _usrservice.ReceiveThumbnailMessages(userid);
@@ -136,7 +129,7 @@ namespace WEBAPI.Controllers
         [HttpGet("GetAllMessagesBetweenUsers")]
         public async Task<ActionResult<List<Msg>>> GetAllMessagesBetweenUsers(int user1, int user2)
         {
-            var result = await _usrservice.GetAllMessagesBetweenUsers(user1,user2);
+            var result = await _usrservice.GetAllMessagesBetweenUsers(user1, user2);
             if (result is null)
                 return NotFound("Hero not found.");
 
@@ -151,6 +144,8 @@ namespace WEBAPI.Controllers
 
             return Ok(result);
         }
+        //msj silme eklenmeli bütün msjları siliyor. 
+
 
      
     }

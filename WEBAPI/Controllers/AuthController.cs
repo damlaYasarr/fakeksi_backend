@@ -1,95 +1,96 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using WEBAPI.Models.DTO_s.UserDTos;
 using WEBAPI.Services;
-using Python.Runtime;
-using IronPython.Hosting;
 
-using Microsoft.Scripting.Hosting;
-using System.Xml.Linq;
-using static IronPython.Runtime.Profiler;
-using WEBAPI.Models;
+using WEBAPI.Utilities.Validator;
 
 namespace WEBAPI.Controllers
 {
-    
+
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
-        private readonly IAuthService _usrservice;
-       
-      
-        public AuthController(IAuthService usrservice)
-        {
-            _usrservice = usrservice;
+        private readonly IAuthService _authservice;
 
+     
+       public AuthController(IAuthService authservice)
+        {
+            _authservice = authservice;
+          
         }
 
         [Route("login")]
         [HttpPost]
         public async Task<ActionResult<string>> Login([FromBody] UserForLoginDto userForLoginDto)
         {
-            dynamic userToLogin = await _usrservice.Login(userForLoginDto);
+            var userToLogin = await _authservice.Login(userForLoginDto);
 
             if (userToLogin == null)
             {
-                return Unauthorized("Invalid username or password"); 
+                return Unauthorized("Invalid username or password");
             }
-            dynamic accessToken = await _usrservice.CreateAccessToken(userToLogin);
-            if (accessToken != null)
-            {
-                return Ok(accessToken);
-            }
-            return BadRequest("kullanıcı olmalı");
+
+            return Ok(userToLogin);
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult>Register(UserForRegisterDto userForRegisterDto)
+        public async Task<ActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            var userExists = _usrservice.UserExists(userForRegisterDto.email);
-            if (userExists != null)
+            // Check if user already exists
+            var userExists = await _authservice.UserExists(userForRegisterDto.email);
+            if (userExists)
             {
-                return BadRequest("kullanıcı zaten var ");
+                return BadRequest("Kullanıcı zaten var.");
             }
-       
-            var registerResult = _usrservice.Register(userForRegisterDto, userForRegisterDto.password);
-            if (registerResult != null)
+
+            // Validate email format
+            bool emailValid = EmailValidator.IsValidEmail(userForRegisterDto.email);
+            if (!emailValid)
             {
-                try
-                {
-                    IDictionary<string, object> options = new Dictionary<string, object>();
-                    options["Arguments"] = new[] { @"C:\Program Files (x86)\IronPython 2.7\Lib", "bar" };
-                    var name = @"C:\Users\damla\source\repos\fakeksi_backend\WEBAPI\Services\emailconfig\emailconfig.py";
+                return BadRequest("Email is not valid.");
+            }
+
+            // Register the user
+            var registerResult = await _authservice.Register(userForRegisterDto, userForRegisterDto.password);
+            if (registerResult == null)
+            {
+                return StatusCode(500, "Registration failed.");
+            }
+
+            // Try to send activation email
+            try
+            {
+                     IDictionary<string, object> options = new Dictionary<string, object>
+                 {
+                { "Arguments", new[] { @"C:\Program Files (x86)\IronPython 2.7\Lib", "bar" } }
+                    };
+                    var name = @"C:\Users\damla\source\repos\fakeksi_backend\WEBAPI\Utilities\emailconfig\emailconfig.py";
                     var ipy = IronPython.Hosting.Python.CreateRuntime(options);
                     dynamic Python_File = ipy.UseFile(name);
-                    //main is my funciton name
                     Python_File.main(userForRegisterDto.email.ToString());
-                    _usrservice.RegisterActivate(userForRegisterDto.email);
-                    return Ok( registerResult);
-
-                }
-                catch (Exception ex)
-                {
-                    // Handle the exception (e.g., log it or display an error message).
-                    Console.WriteLine("An error occurred: " + ex.Message);
-                }
-
-              
+                    // Activate the user after successful email send
+                    await _authservice.RegisterActivate(userForRegisterDto.email);
+                    return Ok(registerResult);
             }
-
-            return BadRequest(null);
+            catch (Exception ex)
+            {
+                // Log the error and return a meaningful error message
+                Console.WriteLine("An error occurred: " + ex.Message);
+                return StatusCode(500, "An error occurred while sending the activation email.");
+            }
         }
         [HttpPost("forgotpassword")]
         public async Task<ActionResult> Register(string email, string password)
         {
-            var userExists = _usrservice.UserExists(email);
+            var userExists = _authservice.UserExists(email);
             if (userExists == null)
             {
                 return BadRequest("null");
             }
 
-            
-            var result = _usrservice.ForgotPassword(email,password);
+
+            var result = _authservice.ForgotPassword(email, password);
             if (result != null)
             {
                 return Ok(result);
@@ -99,19 +100,6 @@ namespace WEBAPI.Controllers
         }
 
 
-        // static void RunScript(string scriptPath, string functionname, string email)
-        
-        //    {
-        //    Runtime.PythonDLL = @"C:\Program Files\Python311\python311.dll";
-        //    PythonEngine.Initialize();
+    }
 
-        //    using (Py.GIL())
-        //    {
-        //        dynamic pythonModule = Py.Import(scriptPath);
-        //        dynamic pythonFunction = pythonModule.ToPython(functionname);
-        //        pythonFunction(email);
-               
-        //    }
-        //}
-}
 }

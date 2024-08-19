@@ -2,7 +2,6 @@
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s;
 using WEBAPI.Models.DTO_s.UserDTos;
-using WEBAPI.Utilities.Security.JWT;
 
 namespace WEBAPI.Services
 {
@@ -10,9 +9,8 @@ namespace WEBAPI.Services
     {
         Task<List<Users>> GetAllUsers();
         Task<Users?> GetSingleUsrsById(int id);
-       // Task<List<Users>> AddUser(Users hero);
-        //Task<Users?> Login(string email, string password);
-        Task<Users?> Logout(int id);
+      
+        
         Task<Users?> Addfollower(int benim, int otheruser);
         Task<Users?> DeleteFollower(int benim, int otheruser);
         Task<string> GetUserNameById(int id);
@@ -22,7 +20,7 @@ namespace WEBAPI.Services
         Task<List<string>> GetAllFollowed(int id);
         Task<UserForProfileInfo> GetUserProfileInfo(int id);
 
-
+        // kafka araştır msg için 
         Task<Msg> SendMessage(int userid, int otherid, string msg);
         Task<List<GetMsgThumbnail>> ReceiveThumbnailMessages(int userId); //bana gelen mesjlar listelenmeli
       
@@ -36,10 +34,8 @@ namespace WEBAPI.Services
 
         Task<List<Msg>> GetAllMessagesBetweenUsers(int userId1, int userId2);
 
-
-        List<OperationClaim> GetOperationClaims(Users user);
         void Add(Users user);
         Task<Users> GetByMail(string email);
-        void UserActive(string email);
+        Task UserActive(string email);
     }
 }

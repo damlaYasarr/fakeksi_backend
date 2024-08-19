@@ -9,10 +9,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System.Security.AccessControl;
 using Newtonsoft.Json;
 using System.Text;
-using WEBAPI.Utilities.Security.JWT;
 using WEBAPI.Constants;
 using WEBAPI.Models.DTO_s.UserDTos;
-using WEBAPI.Utilities.Security.Hashing;
 using WEBAPI.Models.DTO_s;
 using System.Formats.Tar;
 using Castle.DynamicProxy.Generators;
@@ -177,17 +175,7 @@ namespace WEBAPI.Services
         }
 
 
-        public List<OperationClaim> GetOperationClaims(Users user)
-        {
-                var result = from operationClaim in _context.OperationClaim
-                             join userOperationClaim in _context.UserOperationClaim
-                                 on operationClaim.Id equals userOperationClaim.operationid
-                             where userOperationClaim.Userid == user.user_id
-                             select new OperationClaim { Id = operationClaim.Id, Name = operationClaim.Name };
-                return result.ToList();
-
-            
-        }
+   
 
         public void Add(Users user)
         {
@@ -321,12 +309,18 @@ namespace WEBAPI.Services
 
      
 
-
+        //işaretleyerek silme
         public async Task DeleteAllMsg(int userid, int senderid)
         {
-            //
-            throw new NotImplementedException();
+            var result = from x in _context.Msg
+                         where x.msg_sender_id == userid && x.msg_receiver_id == senderid
+                         select x; 
+            _context.Remove(result);
+            _context.SaveChanges(); 
+
+
         }
+        //bütün olarak silme --> msj thumbnailden hepsini silme
        
 
 
@@ -398,16 +392,15 @@ namespace WEBAPI.Services
                 return allMessagesBetweenUsers;
             }
 
-            public void UserActive(string email)
+        public async Task UserActive(string email)
         {
-            var result =_context.Users.FirstOrDefault(x => x.email == email);
+            var result = await _context.Users.FirstOrDefaultAsync(x => x.email == email);
             if (result != null)
             {
                 result.isActive = true;
-                _context.Update(result);
-                _context.SaveChanges();
+                _context.Users.Update(result);
+                await _context.SaveChangesAsync();
             }
-           
         }
     }
 }

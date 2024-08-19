@@ -21,5 +21,3 @@ def main(email_receiver):
     with smtplib.SMTP_SSL('smtp.googlemail.com', 465,  context=context, local_hostname="localhost:7095") as smtp:
         smtp.login(email_sender,email_password)
         smtp.sendmail(email_sender,email_receiver,em.as_string())
-   
-

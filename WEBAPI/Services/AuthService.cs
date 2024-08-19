@@ -1,119 +1,150 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mono.Unix.Native;
+using System.Security.Claims;
+using System.Text;
+using RabbitMQ.Client;
 using WEBAPI.Constants;
 using WEBAPI.Data;
 using WEBAPI.Models;
 using WEBAPI.Models.DTO_s.UserDTos;
-using WEBAPI.Utilities.Security.Hashing;
-using WEBAPI.Utilities.Security.JWT;
+using WEBAPI.Utilities.encription;
+using WEBAPI.Utilities.jwt;
+
 
 namespace WEBAPI.Services
 {
     public class AuthService : IAuthService
     {
+        
+        private readonly ITokenHelper _tokenService;
         private readonly IUserService _userService;
-        private readonly ITokenHelper _tokenHelper;
-       
-        public AuthService(IUserService userService, ITokenHelper tokenHelper)
+
+        public AuthService( ITokenHelper tokenService, IUserService userService)
         {
-            _userService = userService;
-            _tokenHelper = tokenHelper;
            
+            _tokenService = tokenService;
+            _userService = userService;
         }
 
-
-
-        public async Task<Users> Login(UserForLoginDto userForLoginDto)
+        public async Task<UserForLoginDto> Login(UserForLoginDto userForLoginDto)
         {
-            var userToCheck = await _userService.GetByMail(userForLoginDto.email);
-            
+            var userToCheck = await _userService.GetByMail(userForLoginDto.Email);
+
             if (userToCheck == null)
             {
-                // Kullanıcı bulunamadı
-                return BadRequest("kullanıcı yok");
+                throw new Exception("Kullanıcı yok"); // User not found
             }
 
             if (!userToCheck.isActive)
             {
-                return BadRequest("kullanıcı aktifleştirme emaili açmadı");
+                throw new Exception("Kullanıcı aktivasyon e-postasını açmadı"); // User has not activated their account
             }
-            if (Hashinghelper.VerifyPasswordHash(userForLoginDto.password, userToCheck.passwordhash, userToCheck.passwordsalt))
+
+            if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToCheck.passwordhash, userToCheck.passwordsalt))
             {
-                // Şifre uyumsuz
-                return BadRequest("şifre yok");
+                throw new Exception("Yanlış şifre"); // Incorrect password
             }
 
-            _userService.UserActive(userForLoginDto.email);
+            // Optionally, mark the user as active after successful login
+             _userService.UserActive(userToCheck.email);
 
-            return userToCheck;
+            // Create token after successful login
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, userToCheck.user_id.ToString()),
+        new Claim(ClaimTypes.Name, userToCheck.email)
+        
+    };
+
+            var token = _tokenService.CreateToken(claims);
+
+            return new UserForLoginDto
+            {
+                Email = userToCheck.email,
+                Token = token
+            };
         }
 
-        private Users BadRequest(string v)
+        public async Task<UserForRegisterDto> Register(UserForRegisterDto userForRegisterDto, string password)
         {
-            throw new NotImplementedException();
-        }
 
-        public Users Register(UserForRegisterDto userForRegisterDto, string password)
-        {
+            // Generate password hash and salt
             byte[] passwordHash, passwordSalt;
-            Hashinghelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
+            // Create the user entity
             DateTime dt = DateTime.Now;
-            string s = dt.ToString("yyyy/MM/dd HH:mm:ss");
+            string registerDate = dt.ToString("yyyy/MM/dd HH:mm:ss");
             var user = new Users
             {
                 email = userForRegisterDto.email,
                 name = userForRegisterDto.name,
-                register_date = s,
+                register_date = registerDate,
                 type = "user",
                 passwordhash = passwordHash,
                 passwordsalt = passwordSalt
             };
-          
-            _userService.Add(user);
-            return user;
-            // throw new NotImplementedException();
-        }
 
-        public  Task UserExists(string email)
-        {
-            var result =  _userService.GetByMail(email);
-            if (result != null)
-            {
-                return Task.FromResult(Messages.UserAlreadyExists);
-            }
-            return null;
-        }
-
-
-
-
-        public async Task<AccessToken> CreateAccessToken(Users user)
-        {
-            var claims =  _userService.GetOperationClaims(user);
-            var accessToken = _tokenHelper.CreateToken(user, claims);
-            return accessToken;
-        }
-
-        public async Task<Users> ForgotPassword(string email, string password)
-        {
-            var result = await _userService.GetByMail(email);
-            byte[] passwordHash, passwordSalt;
-            Hashinghelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
-            if (result != null)
-            {
-                result.passwordhash=passwordHash;
-                result.passwordsalt=passwordSalt;
-                _userService.UpdateUsrs(result.user_id,result);
-            }
-            return result;
+            // Add user to the database
+             _userService.Add(user);
             
+            return new UserForRegisterDto
+            {
+                email = user.email,
+                name = user.name,
+       
+            };
+        }
+      
+        public async Task<bool> UserExists(string email)
+{
+    var result = await _userService.GetByMail(email); // Assuming GetByMail is asynchronous
+    return result != null;
+}
+
+
+
+
+
+        public async Task<Users> ForgotPassword(string email, string newPassword)
+        {
+            // Get the user by their email
+            var user = await _userService.GetByMail(email);
+
+            if (user == null)
+            {
+                return null; // User not found, handle this as needed
+            }
+
+            // Create a new password hash and salt
+            byte[] passwordHash, passwordSalt;
+            HashingHelper.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+
+            // Update the user's password hash and salt
+            user.passwordhash = passwordHash;
+            user.passwordsalt = passwordSalt;
+
+            // Update the user in the database
+            await _userService.UpdateUsrs(user.user_id, user);
+
+            // Return the updated user
+            return user;
         }
 
-        public void RegisterActivate(string email)
+       
+
+        public Task<Users?> Logout(int id)
         {
-            _userService.UserActive(email);
+            throw new NotImplementedException();
         }
+
+        public async Task RegisterActivate(string email)
+        {
+            await _userService.UserActive(email);
+        }
+
     }
     }
