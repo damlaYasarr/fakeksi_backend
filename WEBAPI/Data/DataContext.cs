@@ -4,6 +4,8 @@ using WEBAPI.Models;
 
 namespace WEBAPI.Data
 {
+    // pgadmin e migrate edelim. sistem çalışır haldeyken nginx ekleyelim. 
+    // aws ile free rds nasıl oluşur bunu araştıralım. s3 -router- load balancing- 
     public class DataContext : DbContext
     {
 
@@ -15,7 +17,9 @@ namespace WEBAPI.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server=.;Database=fakeksi;Trusted_Connection=true;TrustServerCertificate=true;");
+            //optionsBuilder.UseNpgsql("Server=.;Database=fakeksi;Trusted_Connection=true;TrustServerCertificate=true;");
+            optionsBuilder.UseNpgsql("Host=localhost; Database=fakeksi; Username=postgres; Password=yourpassword; TrustServerCertificate=true;");
+
         }
 
         public DbSet<Users> Users { get; set; }
